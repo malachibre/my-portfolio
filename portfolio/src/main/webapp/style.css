@@ -1,9 +1,73 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
+
+body {
+  background-color: #aaa;
+  margin: 0;
+  padding: 0;
 }
 
-#greeting-container {
-  margin-top: 20px;
+#headerContent {
+  display: flex;
+  width: inherit;
+  height: 5%;
+  margin: 0;
+  padding: 0;
+  background-color: #aaa
+}
+
+#imageContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+#cycleButton {
+  background-color: #888;
+  color: #000;
+  border: none;
+}
+
+#imageContainer button:hover {
+  background-color: #00F;
+}
+
+
+
+#headerSelfie {
+  width:300px;
+  height:450px; 
+}
+
+#greetingContainer {
+  background-image: url('images/skyline.jpg');
+  background-size: 100% 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#greetingContainer h1, h3 {
+  color: #F00;
+}
+
+#headerNav {
+  margin-top: auto;
+  margin-bottom: 0;
+  list-style-type: none;
+  display: flex;
+  opacity: 1;
+  justify-content: space-around;
+  background-color: #000;
+}
+
+#headerNav li {
+  display: iline;
+  background-color: #000;
+  color: #fff;
+}
+
+#headerNav li a {
+  text-decoration: none;
+  color: #fff;
+}
+
+#headerNav li a:hover {
+  color: #F00;
 }

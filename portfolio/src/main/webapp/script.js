@@ -15,14 +15,40 @@
 /**
  * Adds a random greeting to the page.
  */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+let greetingContainer = document.getElementById("greetingContainer");
+let headerNav = document.getElementById("headerNav");
 
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+
+greetingContainer.addEventListener("mouseover", () => {
+					headerNav.style.opacity = 1;
+				} );
+
+greetingContainer.addEventListener("mouseleave", () => {
+					hideElement(headerNav);
+				});
+// Gradually hides an element.
+function fadeAway(element) {
+	let fadeInterval = setInterval( ()  => {
+  		if (element.style.opacity > 0) {
+ 			element.style.opacity -= .1;
+		} else {
+			clearInterval(fadeInterval);
+		}
+	}, 150);
+}
+
+//Element starts to fade away after 5 seconds.
+function hideElement(element) {
+	setTimeout(() => {fadeAway(headerNav); }, 5000);
+}
+
+// Cycles through 3 different pictures of myself.
+let pictureNumber = 0;
+function cyclePictures() {
+  	let headerSelfie = document.getElementById("headerSelfie");
+	const imageNames = ["campus", "suit", "mainSelfie"];
+  	headerSelfie.src = "images/" + imageNames[pictureNumber] + ".jpg";
+  	pictureNumber++;
+	if (pictureNumber === 3) pictureNumber = 0;
 }
