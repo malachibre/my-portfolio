@@ -41,8 +41,8 @@ body {
 }
 
 #greeting-container h1,
- h3 {
-  color: #F00;
+h3 {
+  color: #f00;
 }
 
 #greeting-container:hover #header-nav {
@@ -52,8 +52,7 @@ body {
 
 #greeting-container:not(:hover) #header-nav {
   opacity: 0;
-  transition: opacity 3s;
-  transition-delay: 2s; 
+  transition: opacity 3s ease 2s; 
 }
 
 #header-nav {
@@ -71,7 +70,6 @@ body {
   background-color: #000;
   color: #fff;
   display: inline;
-
 }
 
 #header-nav li a {

@@ -19,9 +19,7 @@
 // Cycles through 3 different pictures of myself.
 let pictureNumber = 0;
 function cyclePictures() {
-  let headerSelfie = document.getElementById("header-selfie");
+  const headerSelfie = document.getElementById("header-selfie");
   const imageNames = ["campus", "suit", "mainSelfie"];
-  headerSelfie.src = "images/" + imageNames[pictureNumber] + ".jpg";
-  pictureNumber++;
-  if (pictureNumber === 3) pictureNumber = 0;
+  headerSelfie.src = `images/${imageNames[pictureNumber++ % imageNames.length]}.jpg`;
 }
