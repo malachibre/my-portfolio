@@ -16,39 +16,12 @@
  * Adds a random greeting to the page.
  */
 
-let greetingContainer = document.getElementById("greetingContainer");
-let headerNav = document.getElementById("headerNav");
-
-
-greetingContainer.addEventListener("mouseover", () => {
-					headerNav.style.opacity = 1;
-				} );
-
-greetingContainer.addEventListener("mouseleave", () => {
-					hideElement(headerNav);
-				});
-// Gradually hides an element.
-function fadeAway(element) {
-	let fadeInterval = setInterval( ()  => {
-  		if (element.style.opacity > 0) {
- 			element.style.opacity -= .1;
-		} else {
-			clearInterval(fadeInterval);
-		}
-	}, 150);
-}
-
-//Element starts to fade away after 5 seconds.
-function hideElement(element) {
-	setTimeout(() => {fadeAway(headerNav); }, 5000);
-}
-
 // Cycles through 3 different pictures of myself.
 let pictureNumber = 0;
 function cyclePictures() {
-  	let headerSelfie = document.getElementById("headerSelfie");
-	const imageNames = ["campus", "suit", "mainSelfie"];
-  	headerSelfie.src = "images/" + imageNames[pictureNumber] + ".jpg";
-  	pictureNumber++;
-	if (pictureNumber === 3) pictureNumber = 0;
+  let headerSelfie = document.getElementById("header-selfie");
+  const imageNames = ["campus", "suit", "mainSelfie"];
+  headerSelfie.src = "images/" + imageNames[pictureNumber] + ".jpg";
+  pictureNumber++;
+  if (pictureNumber === 3) pictureNumber = 0;
 }

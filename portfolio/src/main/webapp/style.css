@@ -1,73 +1,84 @@
-
 body {
   background-color: #aaa;
   margin: 0;
   padding: 0;
 }
 
-#headerContent {
+#header-content {
+  background-color: #aaa;
   display: flex;
-  width: inherit;
   height: 5%;
   margin: 0;
   padding: 0;
-  background-color: #aaa
+  width: inherit;
 }
 
-#imageContainer {
+#image-container {
   display: flex;
   flex-direction: column;
 }
 
-#cycleButton {
+#cycle-button {
   background-color: #888;
   color: #000;
   border: none;
 }
 
-#imageContainer button:hover {
-  background-color: #00F;
+#image-container button:hover {
+  background-color: #00f;
 }
 
-
-
-#headerSelfie {
-  width:300px;
+#header-selfie {
   height:450px; 
+  width:300px;
 }
 
-#greetingContainer {
-  background-image: url('images/skyline.jpg');
+#greeting-container {
+  background-image: url(images/skyline.jpg);
   background-size: 100% 100%;
   display: flex;
   flex-direction: column;
 }
 
-#greetingContainer h1, h3 {
+#greeting-container h1,
+ h3 {
   color: #F00;
 }
 
-#headerNav {
-  margin-top: auto;
-  margin-bottom: 0;
-  list-style-type: none;
-  display: flex;
+#greeting-container:hover #header-nav {
   opacity: 1;
+  transition: none;
+}
+
+#greeting-container:not(:hover) #header-nav {
+  opacity: 0;
+  transition: opacity 3s;
+  transition-delay: 2s; 
+}
+
+#header-nav {
+  background-color: #000;
+  display: flex;
   justify-content: space-around;
-  background-color: #000;
+  list-style-type: none;
+  margin-bottom: 0;
+  margin-top: auto;
+  opacity: 1;
+  transition: opacity 3s;
 }
 
-#headerNav li {
-  display: iline;
+#header-nav li {
   background-color: #000;
   color: #fff;
+  display: inline;
+
 }
 
-#headerNav li a {
+#header-nav li a {
+  color: #fff;
   text-decoration: none;
-  color: #fff;
 }
 
-#headerNav li a:hover {
-  color: #F00;
+#header-nav li a:hover {
+  color: #f00;
 }
