@@ -20,6 +20,6 @@
 let pictureNumber = 0;
 function cyclePictures() {
   const headerSelfie = document.getElementById("header-selfie");
-  const imageNames = ["campus", "suit", "mainSelfie"];
+  const imageNames = ["campus", "suit", "main-selfie"];
   headerSelfie.src = `images/${imageNames[pictureNumber++ % imageNames.length]}.jpg`;
 }
