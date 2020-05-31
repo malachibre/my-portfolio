@@ -15,14 +15,11 @@
 /**
  * Adds a random greeting to the page.
  */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+// Cycles through 3 different pictures of myself.
+let pictureNumber = 0;
+function cyclePictures() {
+  const headerSelfie = document.getElementById("header-selfie");
+  const imageNames = ["campus", "suit", "main-selfie"];
+  headerSelfie.src = `images/${imageNames[pictureNumber++ % imageNames.length]}.jpg`;
 }
