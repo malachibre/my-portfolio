@@ -12,14 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
+/** Retrieves data from the /data page and displays it. */
+function pullData() {
+    fetch('/data').then((response) => response.text()).then((greeting) => {
+        document.getElementById('greeting').innerHTML = greeting;
+    });
+}
 
-// Cycles through 3 different pictures of myself.
 let pictureNumber = 0;
+
+/**  Cycles through 3 different pictures of myself. */
 function cyclePictures() {
   const headerSelfie = document.getElementById("header-selfie");
   const imageNames = ["campus", "suit", "main-selfie"];
   headerSelfie.src = `images/${imageNames[pictureNumber++ % imageNames.length]}.jpg`;
 }
+
+
