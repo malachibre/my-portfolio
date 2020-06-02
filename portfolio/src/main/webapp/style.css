@@ -4,11 +4,6 @@ body {
   padding: 0;
 }
 
-#get-greeting {
-    height: 5%;
-    width: 20%;
-}
-
 #header-content {
   background-color: #aaa;
   display: flex;

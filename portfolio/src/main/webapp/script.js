@@ -13,40 +13,22 @@
 // limitations under the License.
 
 /** Retrieves data from the /data page and displays it. */
-function getGreeting() {
-  fetch('/data').then((response) => response.json()).then((json) => {
-    document.getElementById('greeting').innerHTML = json.greeting;
+function getComments() {
+  fetch('/data').then(response => response.json()).then((json) => {
+    json.forEach(commentText => createPElement(commentText));
   });
 }
 
-/** Retreives data from /data and passes it into the 
- *  createPElements function
- */
-function getFacts() {
-  fetch('/data').then((response) => response.json()).then((json) => {
-    createPElements(json);
-  });
-}
-
-/** Creates p elements for the text favoriteColor and majors 
- *  attrtibutes from json 
- */
-function createPElements(json) {
-  
-  const favoriteColorText = document.createElement("p");
-  favoriteColorText.innerText = json.favoriteColor;
-  
-  const majorText = document.createElement("p");
-  majorText.innerText = json.major;  
-
-  document.body.appendChild(favoriteColorText);
-  document.body.appendChild(majorText);
-  
+/** Creates p elements and sets the text to comments pulled from \data page*/
+function createPElement(commentText) {
+  const commentElement = document.createElement("p");
+  commentElement.innerText = commentText
+  document.body.appendChild(commentElement);
 }
 
 let pictureNumber = 0;
 
-/**  Cycles through 3 different pictures of myself. */
+/** Cycles through 3 different pictures of myself. */
 function cyclePictures() {
   const headerSelfie = document.getElementById("header-selfie");
   const imageNames = ["campus", "suit", "main-selfie"];
