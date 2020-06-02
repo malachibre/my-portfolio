@@ -19,7 +19,9 @@ function getComments() {
   });
 }
 
-/** Creates p elements and sets the text to comments pulled from \data page*/
+/** Creates paragraph elements and sets the text to comments 
+ *   pulled from \data page. 
+ */
 function createPElement(commentText) {
   const commentElement = document.createElement("p");
   commentElement.innerText = commentText
@@ -34,5 +36,3 @@ function cyclePictures() {
   const imageNames = ["campus", "suit", "main-selfie"];
   headerSelfie.src = `images/${imageNames[pictureNumber++ % imageNames.length]}.jpg`;
 }
-
-
