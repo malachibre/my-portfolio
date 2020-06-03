@@ -135,10 +135,12 @@ function getComments() {
   });
 }
 
+
 /** 
  * Creates paragraph elements and sets the text to comments 
  * pulled from \data page. 
  */
+
 function displayComment(comment) {
   const commentElement = document.createElement("p");
   commentElement.innerText =
@@ -148,11 +150,12 @@ function displayComment(comment) {
 
 window.addEventListener('DOMContentLoaded', getComments, false);
 
-/**  
+let pictureNumber = 0;
+
+/** 
  * Cycles through 3 different pictures of myself.
  * TODO: Add the button to call this method.
  */
-let pictureNumber = 0;
 function cyclePictures() {
   const headerSelfie = document.getElementById("gallery-picture");
   const imageNames = ["campus", "suit", "main-selfie"];
