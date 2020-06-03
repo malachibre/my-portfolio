@@ -32,5 +32,4 @@ public class Comment {
     this.month = month;
     this.year = year;
   }
-
 }
