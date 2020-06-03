@@ -15,21 +15,22 @@
 /** Retrieves data from the /data page and displays it. */
 function getComments() {
   fetch('/data').then(response => response.json()).then((json) => {
-    json.forEach(commentText => displayComment(commentText));
+    json.forEach(comment => displayComment(comment));
   });
 }
-
-window.addEventListener('DOMContentLoaded', getComments, false);
 
 /** 
  * Creates paragraph elements and sets the text to comments 
  * pulled from \data page. 
  */
-function displayComment(commentText) {
+function displayComment(comment) {
   const commentElement = document.createElement("p");
-  commentElement.innerText = commentText
+  commentElement.innerText =
+   `${comment.text} posted on: ${comment.month}/${comment.day}/${comment.year}`;
   document.getElementById("comments-container").appendChild(commentElement);
 }
+
+window.addEventListener('DOMContentLoaded', getComments, false);
 
 let pictureNumber = 0;
 
