@@ -19,10 +19,10 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 
 public class Comment {
-  long day;
-  long month;
-  long year;
-  String text;
+  private long day;
+  private long month;
+  private long year;
+  private String text;
   
 
   public Comment(String text, long day, long month, long year) {
