@@ -1,88 +1,81 @@
 body {
+  align-items: center;
   background-color: #aaa;
-  margin: 0;
-  padding: 0;
-}
-
-#header-content {
-  background-color: #aaa;
-  display: flex;
-  height: 5%;
-  margin: 0;
-  padding: 0;
-  width: inherit;
-}
-
-#image-container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
 }
 
-#cycle-button {
-  background-color: #888;
+#layout-container{
+  display: flex;
+  flex-direction: row;
+  height: 70vh;
+  justify-content: space-between;
+  width: 100vw;
+}
+
+#nav-container{
+  align-items: center;
   color: #000;
-  border: none;
-}
-
-#image-container button:hover {
-  background-color: #00f;
-}
-
-#header-selfie {
-  height:450px;
-  width:300px;
-}
-
-#greeting-container {
-  background-image: url(images/skyline.jpg);
-  background-size: 100% 100%;
   display: flex;
-  flex-direction: column;
+  height: 100%;
+  justify-content: center; 
+  width: 10%;
 }
 
-#greeting-container h1,
-h3 {
-  color: #f00;
-}
-
-#greeting-container:hover #header-nav {
-  opacity: 1;
-  transition: none;
-}
-
-#greeting-container:not(:hover) #header-nav {
-  opacity: 0;
-  transition: opacity 3s ease 2s;
-}
-
-#header-nav {
-  background-color: #000;
+#nav-bar li {
+  align-items: center;
+  background-color: #f00;
+  color: #fff;
   display: flex;
-  justify-content: space-around;
-  list-style-type: none;
-  margin-bottom: 0;
-  margin-top: auto;
-  opacity: 1;
-  transition: opacity 3s;
+  height: 12vh;
+  justify-content: center;
 }
 
-#header-nav li {
-  background-color: #000;
-  color: #fff;
-  display: inline;
+#nav-bar li:hover {
+  background-color: white;
+  color:red;
 }
 
-#header-nav li a {
-  color: #fff;
-  text-decoration: none;
-}
-
-#header-nav li a:hover {
-  color: #f00;
+#content-container{
+  align-items: center;
+  background:#00dbff;
+  border-radius: 5%;
+  height: 100%;
+  justify-content: center;
+  width: 60%;
+    
 }
 
 .icon {
   border: none;
+  margin-left: 1%;
   height: 24px;
   width: 24px;
+}
+
+.selfies{
+    height: 38%;
+    width: 25%;
+}
+
+
+#comment-container{
+  border-radius: 5%;
+  height: 100%;
+  opacity: .75;
+  width: 20%;
+}
+
+input[type=submit] {
+  background-color: #fff;
+  border-color: #f00;
+  color: #f00;   
+}
+
+#comments {
+  height: 80%;
+  overflow-y: scroll;
 }
