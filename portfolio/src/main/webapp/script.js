@@ -146,7 +146,7 @@ function clearComments() {
 }
 
 document.getElementById("submit-amount")
-  .addEventListener("click", () => getComments())
+  .addEventListener("click", () => getComments());
 
 /** 
  * Creates paragraph elements and sets the text to comments 
