@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -23,6 +24,7 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -44,8 +46,19 @@ public class DataServlet extends HttpServlet {
 
     PreparedQuery results = datastore.prepare(query);
 
+    int commentAmount = 10;
+    String qString = request.getParameter("comment-amount");
+    System.out.println(qString);
+
+    if (qString != null) {
+      commentAmount = Integer.parseInt(qString);
+    }
+
     List<Comment> comments = new ArrayList<>();
-    for (Entity entity : results.asIterable()) {
+    Iterable<Entity> newComments = results.asIterable(FetchOptions.Builder.withLimit(commentAmount));    
+    
+    for (Entity entity : newComments) {
+
       String text = (String) entity.getProperty("text");
       long day = (long) entity.getProperty("day");
       long month = (long) entity.getProperty("month");
@@ -59,6 +72,7 @@ public class DataServlet extends HttpServlet {
 
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(comments));
+    
   }
 
   @Override

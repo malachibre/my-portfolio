@@ -27,11 +27,14 @@
     <p id="content-text"></p>
   </div>
   <div id="comment-cotainer">
-    <form action="/data" method="POST">
+    <form action="/data" method="post">
       <p>Add a comment!
       <input type="text" name="comment" value="comment">
-      <input type="submit">
+      <input class="submit-button" type="submit" value="Post Comment">
     </form>
+    <p>Show how many comments?
+    <input id="comment-amount" min="1" max="50" type="number" value="10">
+    <button class="submit-button" id="submit-amount">Submit</button></p>
     <hr>
     <div id="comments"></div>
   </div>

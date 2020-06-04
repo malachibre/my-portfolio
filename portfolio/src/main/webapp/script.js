@@ -130,10 +130,23 @@ document.getElementById("photo-gallery")
   
 /** Retrieves data from the /data page and displays it. */
 function getComments() {
-  fetch('/data').then(response => response.json()).then((json) => {
+  clearComments();
+  commentAmount = document.getElementById("comment-amount").value;
+  fetch('/data?comment-amount=' + commentAmount).then(response => response.json()).then((json) => {
     json.forEach(comment => displayComment(comment));
   });
 }
+
+/** Clears the div container holding the comments */
+function clearComments() {
+    commentContainer = document.getElementById("comments");
+    while(commentContainer.firstChild){
+        commentContainer.removeChild(commentContainer.firstChild);
+    }
+}
+
+document.getElementById("submit-amount")
+  .addEventListener("click", () => getComments())
 
 /** 
  * Creates paragraph elements and sets the text to comments 
