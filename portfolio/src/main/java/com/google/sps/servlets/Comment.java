@@ -25,7 +25,6 @@ public class Comment {
   private long year;
   private String text;
 
-
   public Comment(String text, long day, long month, long year) {
     this.text = text;
     this.day = day;

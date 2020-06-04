@@ -132,7 +132,8 @@ document.getElementById("photo-gallery")
 function getComments() {
   clearComments();
   commentAmount = document.getElementById("comment-amount").value;
-  fetch('/data?comment-amount=' + commentAmount).then(response => response.json()).then((json) => {
+  fetch('/data?comment-amount=' + commentAmount).then(response => response.json())
+  .then((json) => {
     json.forEach(comment => displayComment(comment));
   });
 }
@@ -145,20 +146,19 @@ function clearComments() {
     }
 }
 
-document.getElementById("submit-amount")
-  .addEventListener("click", () => getComments());
-
 /** 
  * Creates paragraph elements and sets the text to comments 
  * pulled from \data page. 
  */
-
 function displayComment(comment) {
   const commentElement = document.createElement("p");
   commentElement.innerText =
    `${comment.text} posted on: ${comment.month}/${comment.day}/${comment.year}`;
   document.getElementById("comments").appendChild(commentElement);
 }
+
+document.getElementById("submit-amount")
+  .addEventListener("click", () => getComments());
 
 window.addEventListener('DOMContentLoaded', getComments, false);
 

@@ -14,7 +14,9 @@
 
 package com.google.sps.servlets;
 
+
 import com.google.appengine.api.datastore.FetchOptions;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -24,7 +26,6 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -35,11 +36,13 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+
     
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   private final ArrayList<String> comments = new ArrayList<>();
-    
+
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query("Comment").addSort("year", SortDirection.DESCENDING)
@@ -50,7 +53,6 @@ public class DataServlet extends HttpServlet {
 
     int commentAmount = 10;
     String qString = request.getParameter("comment-amount");
-    System.out.println(qString);
 
     if (qString != null) {
       commentAmount = Integer.parseInt(qString);
@@ -69,16 +71,16 @@ public class DataServlet extends HttpServlet {
       Comment comment = new Comment(text, day, month, year);
       comments.add(comment);
     }
-
     Gson gson = new Gson();
 
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(comments));
-    
   }
 
+
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { d
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
+
     Entity commentEntity = new Entity("Comment");
 
     commentEntity.setProperty("day", Calendar.getInstance().get(Calendar.DATE));
@@ -87,7 +89,6 @@ public class DataServlet extends HttpServlet {
     commentEntity.setProperty("year", Calendar.getInstance().get(Calendar.YEAR));
 
     datastore.put(commentEntity);
-    
 
     response.sendRedirect("/index.html");
   }

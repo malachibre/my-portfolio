@@ -23,6 +23,7 @@ body {
   height: 100%;
   justify-content: center; 
   width: 10%;
+  border: none;
 }
 
 #nav-bar li {
@@ -81,5 +82,5 @@ body {
 }
 
 form {
-    padding: 0px;
+  padding: 0px;
 }
