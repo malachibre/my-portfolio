@@ -38,6 +38,8 @@ public class DataServlet extends HttpServlet {
     
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+  private final ArrayList<String> comments = new ArrayList<>();
+    
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query("Comment").addSort("year", SortDirection.DESCENDING)
@@ -76,7 +78,7 @@ public class DataServlet extends HttpServlet {
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { d
     Entity commentEntity = new Entity("Comment");
 
     commentEntity.setProperty("day", Calendar.getInstance().get(Calendar.DATE));
@@ -86,6 +88,7 @@ public class DataServlet extends HttpServlet {
 
     datastore.put(commentEntity);
     
+
     response.sendRedirect("/index.html");
   }
 }

@@ -79,3 +79,7 @@ body {
   height: 80%;
   overflow-y: scroll;
 }
+
+form {
+    padding: 0px;
+}
