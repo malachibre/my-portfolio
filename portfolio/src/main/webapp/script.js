@@ -128,27 +128,33 @@ document.getElementById("random-facts")
 document.getElementById("photo-gallery")
   .addEventListener("click", () => loadImages());
   
+
+
 /** Retrieves data from the /data page and displays it. */
 function getComments() {
   clearComments();
-  commentAmount = document.getElementById("comment-amount").value;
+  localStorage.setItem("commentAmount", document.getElementById("comment-amount").value);
+  commentAmount = localStorage.getItem("commentAmount");
   fetch('/data?comment-amount=' + commentAmount).then(response => response.json())
   .then((json) => {
     json.forEach(comment => displayComment(comment));
   });
+  localStorage.setItem("commentAmount", document.getElementById("comment-amount").value);
 }
 
 /** Clears the div container holding the comments */
 function clearComments() {
-    commentContainer = document.getElementById("comments");
+  commentContainer = document.getElementById("comments");
     while(commentContainer.firstChild){
-        commentContainer.removeChild(commentContainer.firstChild);
-    }
+      commentContainer.removeChild(commentContainer.firstChild);
+  }
 }
+
+
 
 /** 
  * Creates paragraph elements and sets the text to comments 
- * pulled from \data page. 
+ * pulled from /data page. 
  */
 function displayComment(comment) {
   const commentElement = document.createElement("p");
@@ -157,8 +163,8 @@ function displayComment(comment) {
   document.getElementById("comments").appendChild(commentElement);
 }
 
-document.getElementById("submit-amount")
-  .addEventListener("click", () => getComments());
+document.getElementById("comment-amount")
+  .addEventListener("change", () => getComments());
 
 window.addEventListener('DOMContentLoaded', getComments, false);
 
