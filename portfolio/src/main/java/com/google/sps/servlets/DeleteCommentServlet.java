@@ -28,8 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Spliterator;
-import java.util.Spliterators;
+
 import java.util.stream.StreamSupport;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -48,9 +47,7 @@ public class DeleteCommentServlet extends HttpServlet {
     Query query = new Query("Comment");
     PreparedQuery results = datastore.prepare(query);
 
-    StreamSupport.stream(Spliterators
-      .spliteratorUnknownSize(results.asIterator(), Spliterator.ORDERED), false)
-      .forEach(entity -> datastore.delete(entity.getKey()));
+    results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE)).stream().forEach(entity -> datastore.delete(entity.getKey()));
 
     response.sendRedirect("/index.html");
   }
