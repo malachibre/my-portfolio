@@ -12,45 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-shownContent = "about-me";
+window.addEventListener('DOMContentLoaded', () => {
+  const navBar = document.getElementById('nav-bar');
+
+  Array.from(navBar.children).forEach(child => {
+    child.addEventListener('click', () => {
+      const targetId = child.getAttribute('data-target-id');
+      const targetElement = document.getElementById(targetId);
+      showContent(targetElement);
+    });
+  });
+});
 
 /* Displays the content title and text in the content container */
-function showContent(contentName){
-  document.getElementById(`${shownContent}-title`).style.display = "none";
-  document.getElementById(`${shownContent}-text`).style.display = "none";
-  document.getElementById("selfie").style.display = "none";
+function showContent(element) {
+  const contentContainer = document.getElementById('content-container');
 
-  document.getElementById(`${contentName}-title`).style.display = "block";
-  document.getElementById(`${contentName}-text`).style.display = "block";
+  Array.from(contentContainer.children).forEach(child => {
+    child.classList.toggle('hidden', true);
+  });
 
-  shownContent = contentName;
+  element.classList.toggle('hidden', false);
 }
 
-/**
- * Loads the first image found in the /images folder.
- */
-function loadImages() {
-  document.getElementById(`${shownContent}-title`).style.display = "none";
-  document.getElementById(`${shownContent}-text`).style.display = "none";
-  
-  document.getElementById("selfie").style.display = "block";
-}
-
-document.getElementById("about-me")
-  .addEventListener("click", () => showContent("about-me"));
-
-document.getElementById("education")
-  .addEventListener("click", () => showContent("education"));
-
-document.getElementById("professional")
-  .addEventListener("click", () => showContent("professional"));
-
-document.getElementById("random-facts")
-  .addEventListener("click", () => showContent("facts"));
-
-document.getElementById("photo-gallery")
-  .addEventListener("click", () => loadImages());
-  
 /** Retrieves data from the /data page and displays it. */
 function getComments() {
   clearComments();
@@ -85,7 +69,14 @@ function displayComment(comment) {
 document.getElementById("comment-amount")
   .addEventListener("change", () => getComments());
 
+function loadCanvas () {
+  const c = document.getElementById("canvas");
+  const ctx = c.getContext("2d");
+
+}
+
 window.addEventListener('DOMContentLoaded', getComments, false);
+
 
 let pictureNumber = 0;
 

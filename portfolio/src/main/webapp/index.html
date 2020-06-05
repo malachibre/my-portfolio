@@ -9,64 +9,73 @@
   <h3>Welcome Buds! I created this website to house 
       professional and academic information about myself.
       Clicking on the buttons below will take you to 
-      different parts of my life.
-  </h3>
+      different parts of my life. </h3>
 </div>
 <div id="layout-container">
   <div id="nav-container">
       <ul id="nav-bar">
-        <li id="about-me">About Me</li>
-        <li id="education">Education</li>
-        <li id="professional">Professional</li>
-        <li id="random-facts">Random Facts</li>
-        <li id="photo-gallery">Photo Gallery</li>
+        <li data-target-id="about-me">About Me
+        <li data-target-id="education">Education
+        <li data-target-id="professional">Professional
+        <li data-target-id="facts">Random Facts
+        <li data-target-id="gallery">Photo Gallery
       </ul>
   </div>
   <div id="content-container">
-    <h3 class="content-title" id="about-me-title">About Me
-      <!--instragram.svg was donloaded form flaticon.com and authored by Dave Gandy-->
-      <a href="https://www.instagram.com/malaxhib/">
-        <img class="icon" src="images/instagram.svg"></img>
-      </a>
-    </h3>
-    <p class="content-text" id="about-me-text">I was born on world on June 7, 2001 in Clevalnd, Ohio. My family  
-      moved away from Ohio when I was around 16 months old. Since we  
-      arrived in Georgia, we have also moved around several times. 
-      Currently we are living in a neighboorhead around 45 miles 
-      north of Atlanta.</p>
-    <h3 class="content-title" id="education-title">Education</h3>
-    <p class="content-text" id="education-text"> Although I didn't always like school growing up,  
-      I have also enjoyed learning new things about the world  
-      and other people which pushed to start appreciating my  
-      education more once I got to high school. The subjects I  
-      liked the most were always math or science. I graduated   
-      high school in summer 2019 and am heading into my  
-      second year as a copmuter science major at the  
-      University of Georgia. </p>
-    <h3 class="content-title" id="professional-title">Professional
-      <!--github.svg was donloaded form flaticon.com and authored by Dave Gandy-->
-      <a href="https://www.linkedin.com/in/malachi-brewer-48957b15b">
-        <img class="icon" src="images/linkedin.svg"></img>
-      </a>
-      <!--github.svg was donloaded form flaticon.com and authored by Dave Gandy-->
-      <a href="https://github.com/malachibre">
-        <img class="icon" src="images/github.svg"></img>
-      </a>
-    </h3>
-    <p class="content-text" id="professional-text">I first started working when I was 17 years old at Banana Republic.  
-      I stayed for a year until I left for college. At UGA, 
-      I started a job working for the web team for the  
-      College of Agricultre and Enviornmental Science.  
-      I had to pause my work here to have time for my STEP internship over  
-    the summer, and will resume working there in August..</p>
-    <h3 class="content-title" id="facts-title">Random Facts</h3>
-    <p class="content-text" id="facts-text">Whenever someone asks for a fun fact, my go to response is how  
-      I've broken both of my arms. Once when I was on a skateboard  
-      and once when I was on a bike. One thing that others point  
-      out is how I can remember the tiniest details about things.</p>
-    <img id="selfie" src="images/main-selfie.jpg"></img>
+    <article id="about-me" class="content-article hidden">  
+	  <h3 class="content-title" id="about-me-title">About Me
+		<!--instragram.svg was donloaded form flaticon.com and authored by Dave Gandy-->
+		<a href="https://www.instagram.com/malaxhib/">
+		  <img class="icon" src="images/instagram.svg">
+	    </a>
+	  </h3>
+	  <p class="content-text" id="about-me-text">I was born on world on June 7, 2001 in Clevalnd, Ohio. My family
+		moved away from Ohio when I was around 16 months old. Since we
+		arrived in Georgia, we have also moved around several times.
+		Currently we are living in a neighborhood around 45 miles
+		north of Atlanta.
+    </article>
+    <article id="education" class="content-article hidden">
+      <h3 class="content-title" id="education-title">Education</h3>
+      <p class="content-text" id="education-text"> Although I didn't always like school growing up,  
+        I have also enjoyed learning new things about the world  
+        and other people which pushed to start appreciating my  
+        education more once I got to high school. The subjects I  
+        liked the most were always math or science. I graduated   
+        high school in summer 2019 and am heading into my  
+        second year as a computer science major at the  
+        University of Georgia.
+    </article>
+    <article id="professional" class="content-article hidden">
+      <h3 class="content-title" id="professional-title">Professional
+        <!--github.svg was downloaded form flaticon.com and authored by Dave Gandy-->
+        <a href="https://www.linkedin.com/in/malachi-brewer-48957b15b">
+          <img class="icon" src="images/linkedin.svg">
+        </a>
+        <!--github.svg was downloaded form flaticon.com and authored by Dave Gandy-->
+        <a href="https://github.com/malachibre">
+          <img class="icon" src="images/github.svg">
+        </a>
+      </h3>
+      <p class="content-text" id="professional-text">I first started working when I was 17 years old at Banana Republic.  
+        I stayed for a year until I left for college. At UGA, 
+        I started a job working for the web team for the  
+        College of Agricultre and Environmental Science.  
+        I had to pause my work here to have time for my STEP internship over  
+        the summer, and will resume working there in August.
+    </article>
+    <article id="facts" class="content-article hidden">
+      <h3 class="content-title" id="facts-title">Random Facts</h3>
+      <p class="content-text" id="facts-text">Whenever someone asks for a fun fact, my go to response is how  
+        I've broken both of my arms. Once when I was on a skateboard  
+        and once when I was on a bike. One thing that others point  
+        out is how I can remember the tiniest details about things.
+    </article>
+    <article id="gallery" class="content-article hidden">
+      <img id="selfie" src="images/main-selfie.jpg">
+    </article>
   </div>
-  <div id="comment-cotainer">
+  <div id="comment-container">
     <form action="/data" method="post">
       <p>Add a comment!
       <input type="text" name="comment" value="comment">
@@ -82,5 +91,6 @@
     <hr>
     <div id="comments"></div>
   </div>
-<div>
+</div>
+<canvas id="canvas" width=2000 height=230></canvas>
 <script src="script.js"></script>

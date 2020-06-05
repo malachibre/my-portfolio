@@ -1,6 +1,6 @@
 body {
   align-items: center;
-  background-color: #aaa;
+  background-image: linear-gradient(90deg, rgba(176, 176, 176, .9), rgba(225, 240, 240, .4));
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -12,18 +12,22 @@ body {
   display: flex;
   flex-direction: row;
   height: 70vh;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 100vw;
 }
 
 #nav-container{
   align-items: center;
+  border: none;
   color: #000;
   display: flex;
   height: 100%;
   justify-content: center; 
   width: 10%;
-  border: none;
+  
+}
+#nav-bar{
+    padding: 0;
 }
 
 #nav-bar li {
@@ -50,12 +54,12 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  margin-right: 2%;
   width: 60%;
     
 }
 
 .content-title {
-  display: none;
   font-size: 2em;
   height: 10%;
   padding: 2%;
@@ -64,26 +68,26 @@ body {
 }
 
 .content-text {
-  display: none;
   font-size: 1.5em;
   padding: 2%;
   text-align: center;
 }
 
-#about-me-title{
-  display: block; 
+.content-article {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-#about-me-text{
-  display: block; 
+.hidden{
+  display: none;
 }
 
 #selfie {
-  display: none;
   height: 75%;
   margin: auto;
 }
-
 
 .icon {
   border: none;
@@ -92,12 +96,8 @@ body {
   width: 32px;
 }
 
-
-#comment-container{
-  border-radius: 5%;
-  height: 100%;
-  opacity: .75;
-  width: 20%;
+#comment-container {
+    margin-right: 2%;
 }
 
 .submit-button {
@@ -108,6 +108,7 @@ body {
 
 #comments {
   height: 73%;
+  opacity: .5;
   overflow-y: scroll;
 }
 
