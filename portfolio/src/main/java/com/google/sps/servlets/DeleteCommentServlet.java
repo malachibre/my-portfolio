@@ -28,14 +28,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
-@WebServlet("/delete-data")
-public class DeleteServlet extends HttpServlet {
+/** Servlet deletes all Comment Entities from the datastore.*/
+@WebServlet("/delete-comment-data")
+public class DeleteCommentServlet extends HttpServlet {
 
 @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
@@ -45,9 +48,9 @@ public class DeleteServlet extends HttpServlet {
     Query query = new Query("Comment");
     PreparedQuery results = datastore.prepare(query);
 
-    for(Entity entity : results.asIterable()){
-        datastore.delete(entity.getKey());
-    }
+    StreamSupport.stream(Spliterators
+      .spliteratorUnknownSize(results.asIterator(), Spliterator.ORDERED), false)
+      .forEach(entity -> datastore.delete(entity.getKey()));
 
     response.sendRedirect("/index.html");
   }

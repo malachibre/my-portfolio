@@ -15,11 +15,10 @@
 package com.google.sps.servlets;
 
 
-import com.google.appengine.api.datastore.FetchOptions;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
@@ -33,15 +32,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** 
+ * Servlet handles retrieving comments from the datastore
+ * and containing them in a JSON string. 
+ */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-    
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   private final ArrayList<String> comments = new ArrayList<>();
-
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -51,12 +51,8 @@ public class DataServlet extends HttpServlet {
 
     PreparedQuery results = datastore.prepare(query);
 
-    int commentAmount = 10;
-    String qString = request.getParameter("comment-amount");
-
-    if (qString != null) {
-      commentAmount = Integer.parseInt(qString);
-    }
+    String amountParam = request.getParameter("comment-amount");
+    int commentAmount = amountParam == null ? 10 : Integer.parseInt(amountParam);
 
     List<Comment> comments = new ArrayList<>();
     Iterable<Entity> newComments = results.asIterable(FetchOptions.Builder.withLimit(commentAmount));    
@@ -92,7 +88,4 @@ public class DataServlet extends HttpServlet {
 
     response.sendRedirect("/index.html");
   }
-
-  
-
 }
