@@ -88,4 +88,17 @@ public class DataServlet extends HttpServlet {
 
     response.sendRedirect("/index.html");
   }
+  
+  @Override
+  public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException { 
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    Query query = new Query("Comment").setKeysOnly();
+    PreparedQuery results = datastore.prepare(query);
+
+    results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE)).stream().forEach(entity -> datastore.delete(entity.getKey()));
+
+    response.sendRedirect("/index.html");
+  }
 }

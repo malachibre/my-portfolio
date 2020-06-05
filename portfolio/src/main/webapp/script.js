@@ -35,6 +35,7 @@ function showContent(element) {
   element.classList.toggle('hidden', false);
 }
 
+showContent(document.getElementById("about-me"));
 /** Retrieves data from the /data page and displays it. */
 function getComments() {
   clearComments();
@@ -69,14 +70,20 @@ function displayComment(comment) {
 document.getElementById("comment-amount")
   .addEventListener("change", () => getComments());
 
+/** Removes the comments from the page after being cleared from the Datasore */
+function deleteComments() {
+    fetch("/data", {method: "DELETE"}).then(clearComments());
+}
+
+document.getElementById("delete-comments")
+  .addEventListener("click", deleteComments);
+
 function loadCanvas () {
   const c = document.getElementById("canvas");
   const ctx = c.getContext("2d");
-
 }
 
 window.addEventListener('DOMContentLoaded', getComments, false);
-
 
 let pictureNumber = 0;
 
