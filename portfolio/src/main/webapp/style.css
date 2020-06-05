@@ -31,8 +31,11 @@ body {
   background-color: #f00;
   color: #fff;
   display: flex;
-  height: 12vh;
+  height: 14vh;
   justify-content: center;
+  padding-left: 3%;
+  padding-right: 3%;
+  text-align: center;
 }
 
 #nav-bar li:hover {
@@ -44,22 +47,49 @@ body {
   align-items: center;
   background:#00dbff;
   border-radius: 5%;
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  justify-content: center;
   width: 60%;
     
 }
 
+.content-title {
+  display: none;
+  font-size: 2em;
+  height: 10%;
+  padding: 2%;
+  text-align: center;
+  width: 50%;
+}
+
+.content-text {
+  display: none;
+  font-size: 1.5em;
+  padding: 2%;
+  text-align: center;
+}
+
+#about-me-title{
+  display: block; 
+}
+
+#about-me-text{
+  display: block; 
+}
+
+#selfie {
+  display: none;
+  height: 75%;
+  margin: auto;
+}
+
+
 .icon {
   border: none;
   margin-left: 1%;
-  height: 24px;
-  width: 24px;
-}
-
-.selfies{
-  height: 38%;
-  width: 25%;
+  height: 32px;
+  width: 32px;
 }
 
 
@@ -77,8 +107,12 @@ body {
 }
 
 #comments {
-  height: 80%;
+  height: 73%;
   overflow-y: scroll;
+}
+
+#comments p {
+  font-size: 1.2em;
 }
 
 form {
