@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-/* Displays the content title and text in the content container */
+/** Displays the content title and text in the content container. */
 function showContent(element) {
   const contentContainer = document.getElementById('content-container');
 
@@ -36,6 +36,7 @@ function showContent(element) {
 }
 
 showContent(document.getElementById("about-me"));
+
 /** Retrieves data from the /data page and displays it. */
 function getComments() {
   clearComments();
@@ -48,7 +49,7 @@ function getComments() {
   localStorage.setItem("commentAmount", document.getElementById("comment-amount").value);
 }
 
-/** Clears the div container holding the comments */
+/** Clears the div container holding the comments. */
 function clearComments() {
   commentContainer = document.getElementById("comments");
     while(commentContainer.firstChild){
@@ -70,7 +71,7 @@ function displayComment(comment) {
 document.getElementById("comment-amount")
   .addEventListener("change", () => getComments());
 
-/** Removes the comments from the page after being cleared from the Datasore */
+/** Removes the comments from the page after being cleared from the Datasore. */
 function deleteComments() {
     fetch("/data", {method: "DELETE"}).then(clearComments());
 }

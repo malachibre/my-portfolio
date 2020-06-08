@@ -73,7 +73,6 @@ public class DataServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(comments));
   }
 
-
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
 
