@@ -16,12 +16,20 @@ window.addEventListener('DOMContentLoaded', () => {
   const navBar = document.getElementById('nav-bar');
 
   Array.from(navBar.children).forEach(child => {
-    child.addEventListener('click', () => {
-      const targetId = child.getAttribute('data-target-id');
-      const targetElement = document.getElementById(targetId);
-      showContent(targetElement);
-    });
-  });
+      child.addEventListener('click', () => {
+          const targetId = child.getAttribute('data-target-id');
+          const targetElement = document.getElementById(targetId);
+          showContent(targetElement);
+        });
+      });
+
+  document.getElementById("comment-amount")
+      .addEventListener("change", getComments);
+    
+  document.getElementById("delete-comments")
+      .addEventListener("click", deleteComments);
+
+  getComments();
 });
 
 /** Displays the content title and text in the content container. */
@@ -29,30 +37,33 @@ function showContent(element) {
   const contentContainer = document.getElementById('content-container');
 
   Array.from(contentContainer.children).forEach(child => {
-    child.classList.toggle('hidden', true);
+      child.classList.toggle('hidden', true);
   });
 
   element.classList.toggle('hidden', false);
 }
 
-showContent(document.getElementById("about-me"));
-
 /** Retrieves data from the /data page and displays it. */
 function getComments() {
   clearComments();
-  localStorage.setItem("commentAmount", document.getElementById("comment-amount").value);
+
+  localStorage.setItem("commentAmount",
+      document.getElementById("comment-amount").value);
+
   commentAmount = localStorage.getItem("commentAmount");
-  fetch('/data?comment-amount=' + commentAmount).then(response => response.json())
-  .then((json) => {
-    json.forEach(comment => displayComment(comment));
-  });
-  localStorage.setItem("commentAmount", document.getElementById("comment-amount").value);
+
+  fetch(`/data?comment-amount=${commentAmount}`)
+      .then(response => response.json())
+      .then(json => {
+          json.forEach(displayComment);
+        });
+
 }
 
 /** Clears the div container holding the comments. */
 function clearComments() {
   commentContainer = document.getElementById("comments");
-    while(commentContainer.firstChild){
+    while(commentContainer.firstChild) {
       commentContainer.removeChild(commentContainer.firstChild);
   }
 }
@@ -64,27 +75,19 @@ function clearComments() {
 function displayComment(comment) {
   const commentElement = document.createElement("p");
   commentElement.innerText =
-   `${comment.text} posted on: ${comment.month}/${comment.day}/${comment.year}`;
+      `${comment.text} posted on: ${comment.month}/${comment.day}/${comment.year}`;
   document.getElementById("comments").appendChild(commentElement);
 }
 
-document.getElementById("comment-amount")
-  .addEventListener("change", () => getComments());
-
 /** Removes the comments from the page after being cleared from the Datasore. */
 function deleteComments() {
-    fetch("/data", {method: "DELETE"}).then(clearComments());
+  fetch("/data", {method: "DELETE"}).then(clearComments);
 }
 
-document.getElementById("delete-comments")
-  .addEventListener("click", deleteComments);
-
-function loadCanvas () {
+function loadCanvas() {
   const c = document.getElementById("canvas");
   const ctx = c.getContext("2d");
 }
-
-window.addEventListener('DOMContentLoaded', getComments, false);
 
 let pictureNumber = 0;
 
