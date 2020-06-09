@@ -111,12 +111,19 @@ public class DataServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    Query query = new Query("Comment").setKeysOnly();
-    PreparedQuery results = datastore.prepare(query);
-
-    results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE)).stream().forEach(entity -> datastore.delete(entity.getKey()));
+    removeEntities("Comment");
+    removeEntities("__BlobInfo__");
+    removeEntities("__BlobUploadSession__");
 
     response.sendRedirect("/index.html");
+  }
+
+  /** Removes entities from datastore based off a query string. */
+  private void removeEntities(String query) {
+    datastore.prepare(new Query(query))
+             .asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE))
+             .stream()
+             .forEach(entity -> datastore.delete(entity.getKey()));                                          
   }
   
  /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
