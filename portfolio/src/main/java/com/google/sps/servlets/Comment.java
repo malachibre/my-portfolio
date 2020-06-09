@@ -14,17 +14,12 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-
 /** This class sets the text and date data for a {@code Comment} */
 public class Comment {
   private long day;
   private long month;
   private long year;
   private String text;
-  
 
   public Comment(String text, long day, long month, long year) {
     this.text = text;
@@ -32,5 +27,4 @@ public class Comment {
     this.month = month;
     this.year = year;
   }
-    
 }
