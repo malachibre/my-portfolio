@@ -34,6 +34,7 @@ body {
   align-items: center;
   background-color: #f00;
   color: #fff;
+  cursor: pointer;
   display: flex;
   height: 14vh;
   justify-content: center;
@@ -118,8 +119,32 @@ body {
   overflow-y: scroll;
 }
 
+
+.popup-content {
+  background-color: #bbb;
+  cursor: pointer;
+  position: absolute;
+  visibility: hidden;
+  top: 25vh;
+  left: 68.5vw;
+  width: 20vw;
+  height: 20vh;
+  
+}
+
 #comments p {
+  cursor: pointer;
   font-size: 1.2em;
+}
+
+.show {
+  visibility: visible;
+  animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
 }
 
 form {

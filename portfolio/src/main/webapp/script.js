@@ -78,13 +78,43 @@ function clearComments() {
 
 /** 
  * Creates paragraph elements and sets the text to comments 
- * pulled from /data page. 
+ * pulled from /data page.
+ * 
+ * TODO: Sperate this method into 2. 
+ * 1) Create the p element.
+ * 2) Create the popupElement.
  */
 function displayComment(comment) {
   const commentElement = document.createElement("p");
   commentElement.innerText =
       `${comment.title} posted on: ${comment.month}/${comment.day}/${comment.year}`;
+
+  const popupElement = document.createElement("span")
+  popupElement.classList.add("popup-content");
+  const commentTitle = document.createElement("h5");
+  commentTitle.innerText = comment.title;
+  const commentText = document.createElement("p");
+  commentText.innerText = comment.text;
+  const commentImg = document.createElement("img");
+  commentImg.src = comment.imageUrl;
+
+  popupElement.appendChild(commentTitle);
+  popupElement.appendChild(commentText);
+
+  if (comment.imageUrl) { 
+    popupElement.appendChild(commentImg);
+  }
+
+  commentElement.addEventListener("click", () => {
+      popupElement.classList.toggle("show");
+  });
+
+  popupElement.addEventListener("click", () => {
+      popupElement.classList.toggle("show");
+  });
+
   document.getElementById("comments").appendChild(commentElement);
+  document.body.appendChild(popupElement);
 }
 
 /** Removes the comments from the page after being cleared from the Datastore. */
