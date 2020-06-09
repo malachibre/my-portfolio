@@ -16,13 +16,17 @@ package com.google.sps.servlets;
 
 /** This class sets the text and date data for a {@code Comment} */
 public class Comment {
-  private long day;
-  private long month;
-  private long year;
-  private String text;
+  private final long day;
+  private final long month;
+  private final long year;
+  private final String text;
+  private final String title;
+  private final String imageUrl;
 
-  public Comment(String text, long day, long month, long year) {
+  public Comment(String title, String text, String imageUrl, long day, long month, long year) {
+    this.title = title;
     this.text = text;
+    this.imageUrl = imageUrl;
     this.day = day;
     this.month = month;
     this.year = year;

@@ -13,14 +13,14 @@ body {
   background-color: #00dbff;
   border-radius: 10%;
   display: flex;
-  height: 925px;
+  height: 80%;
   margin-right: 5%;
-  width: 925px;
+  width: 60%;
 }
 
 form {
-  margin-left: 15%;
-  margin-top: 15%; 
+  margin-left: 10%;
+  margin-top: 3%; 
 }
 
 form p {
@@ -33,5 +33,5 @@ form p {
 }
 
 textarea {
-  height: 30em;
+  height: 25em;
 }

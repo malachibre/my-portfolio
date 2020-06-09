@@ -25,11 +25,21 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById("comment-amount")
       .addEventListener("change", getComments);
+
+
+  document.getElementById("to-comment-page")
+      .addEventListener("click", () => window.location.replace("/comment-constructor.jsp"))
     
   document.getElementById("delete-comments")
       .addEventListener("click", deleteComments);
 
+  if (localStorage.getItem("commentAmount")) {
+    document.getElementById("comment-amount").value =
+        localStorage.getItem("commentAmount");
+  }
+
   getComments();
+  
 });
 
 /** Displays the content title and text in the content container. */
@@ -51,13 +61,11 @@ function getComments() {
       document.getElementById("comment-amount").value);
 
   commentAmount = localStorage.getItem("commentAmount");
-
   fetch(`/data?comment-amount=${commentAmount}`)
       .then(response => response.json())
       .then(json => {
           json.forEach(displayComment);
         });
-
 }
 
 /** Clears the div container holding the comments. */
@@ -75,11 +83,11 @@ function clearComments() {
 function displayComment(comment) {
   const commentElement = document.createElement("p");
   commentElement.innerText =
-      `${comment.text} posted on: ${comment.month}/${comment.day}/${comment.year}`;
+      `${comment.title} posted on: ${comment.month}/${comment.day}/${comment.year}`;
   document.getElementById("comments").appendChild(commentElement);
 }
 
-/** Removes the comments from the page after being cleared from the Datasore. */
+/** Removes the comments from the page after being cleared from the Datastore. */
 function deleteComments() {
   fetch("/data", {method: "DELETE"}).then(clearComments);
 }

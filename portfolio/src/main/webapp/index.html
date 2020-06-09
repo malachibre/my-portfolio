@@ -76,20 +76,16 @@
     </article>
   </div>
   <div id="comment-container">
-    <form action="/data" method="post">
-      <p>Add a comment!
-      <input type="text" name="comment" value="comment">
-      <input class="submit-button" type="submit" value="Post Comment">
-    </form>
-    <Button class="submit-button" id="to-comment-page"> Add longer comment? </Button>
+    <h3>Comments!</h3>
     <form>
       <p>Show how many comments?
       <input id="comment-amount" min="1" max="50" name="comment-amount" type="number" value="10">
     </form>
-    <button class="submit-button" id="delete-comments">Delete Comments</button>
+    <button id="delete-comments">Delete Comments</button> 
+    <button id="to-comment-page">Post a Comment</button>
     <hr>
     <div id="comments"></div>
   </div>
 </div>
-<canvas id="canvas" width=2000 height=230></canvas>
+<canvas id="canvas" width=500 height=100></canvas>
 <script src="script.js"></script>

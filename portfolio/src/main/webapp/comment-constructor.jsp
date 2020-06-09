@@ -1,4 +1,4 @@
-<%--
+<%--=
 Copyright 2019 Google LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,20 +19,20 @@ limitations under the License.
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
 <% BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-   String uploadUrl = blobstoreService.createUploadUrl("/comment-handler"); %>
+   String uploadUrl = blobstoreService.createUploadUrl("/data"); %>
 
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>My Portfolio</title>
 <link rel="stylesheet" href="comment-style.css">
 <div id="content-container">
-  <form method="post"  enctype="multipart/form-data action"> 
+  <form action="<%= uploadUrl %>" enctype="multipart/form-data"  method="post" >  
     <p>Title</p>
-    <input class="form-input" type="text">
+    <input class="form-input" type="text" name="title"></input>
     <p>Text</p>
-    <textarea class="form-input" name="message"></textarea>
+    <textarea class="form-input" name="text" type="text"></textarea>
     <p>Upload an image (optional)</p>
-    <input type="file" name="image">
+    <input type="file" name="image" src="images/background.jpg">
     <input type="submit">Add Comment
   </form>
 </div>
