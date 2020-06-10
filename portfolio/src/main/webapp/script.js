@@ -13,6 +13,18 @@
 // limitations under the License.
 
 window.addEventListener('DOMContentLoaded', () => {
+
+  showCommentForm();
+
+  document.getElementById("login")
+      .addEventListener("click", () => window.location.replace("/auth"));
+    
+  document.getElementById("header-login")
+      .addEventListener("click", () => window.location.replace("/auth"));
+
+   document.getElementById("logout")
+      .addEventListener("click", () => window.location.replace("/auth"));   
+
   const navBar = document.getElementById('nav-bar');
 
   Array.from(navBar.children).forEach(child => {
@@ -25,7 +37,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById("comment-amount")
       .addEventListener("change", getComments);
-
 
   document.getElementById("to-comment-page")
       .addEventListener("click", () => window.location.replace("/comment-constructor.jsp"))
@@ -126,6 +137,46 @@ function loadCanvas() {
   const c = document.getElementById("canvas");
   const ctx = c.getContext("2d");
 }
+
+
+/** 
+ * This method checks the login status. If the user is logged in, 
+ * then the post comment button is displayed, the login buttons are hidden,
+ * and the logout button is displayed.
+ */
+function showCommentForm() {
+  fetch("/auth").then(response => response.text())
+                .then(text => {
+                    if (text.includes("logged in")) {
+                        document.getElementById("header-login").classList.add("hidden");
+                        document.getElementById("login").classList.add("hidden");
+                        document.getElementById("to-comment-page").classList.remove("hidden");
+                        showUser();
+                    }
+                });
+}
+
+function hideCommentForm() {
+fetch("/auth").then(response => response.text())
+              .then(text => {
+                  if (text.replace("\n", "").includes("logged in")) {
+                      document.getElementById("header-login").classList.add("hidden");
+                      document.getElementById("login").classList.add("hidden");
+                      document.getElementById("to-comment-page").classList.remove("hidden");
+                      document.getElementById("logout-container").classList.add("hidden");
+                  }
+                });
+}
+
+/**
+ * Displays logout button and the username of logged in user.
+ */
+function showUser() {
+  document.getElementById("logout-container").classList.remove("hidden");
+  document.getElementById("user-display").innerText = "Hello!"
+}
+
+
 
 let pictureNumber = 0;
 

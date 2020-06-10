@@ -10,6 +10,11 @@
       professional and academic information about myself.
       Clicking on the buttons below will take you to 
       different parts of my life. </h3>
+  <button id="header-login">Login</button>
+  <div class="hidden" id="logout-container"> 
+    <p id="user-display"></p>
+    <button id="logout">Logout</button>
+  </div>
 </div>
 <div id="layout-container">
   <div id="nav-container">
@@ -81,8 +86,9 @@
       <p>Show how many comments?
       <input id="comment-amount" min="1" max="50" name="comment-amount" type="number" value="10">
     </form>
-    <button id="delete-comments">Delete Comments</button> 
-    <button id="to-comment-page">Post a Comment</button>
+    <button id="delete-comments">Delete Comments</button>
+    <button id="login">Log in to leave comment</button> 
+    <button class="hidden" id="to-comment-page">Post a Comment</button>
     <hr>
     <div id="comments"></div>
   </div>
