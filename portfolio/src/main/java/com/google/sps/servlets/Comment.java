@@ -15,14 +15,16 @@
 package com.google.sps.servlets;
 
 /** This class sets the text and date data for a {@code Comment} */
-public class Comment {
-  private final String postedTime;
+public final class Comment {
+
+  /** postedDateTIme should appear like this: Jun 11, 2020 11:18 AM */  
+  private final String postedDateTime;
   private final String title;
   private final String text;
   private final String imageUrl;
 
-  public Comment(String postedTime, String title, String text, String imageUrl) {
-    this.postedTime = postedTime;
+  public Comment(String postedDateTime, String title, String text, String imageUrl) {
+    this.postedDateTime = postedDateTime;
     this.title = title;
     this.text = text;
     this.imageUrl = imageUrl;

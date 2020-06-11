@@ -90,7 +90,7 @@ function clearComments() {
 function displayComment(comment) {
   const commentElement = document.createElement("p");
   commentElement.innerText =
-      `${comment.title} posted on: ${comment.postedTime}`;
+      `${comment.title} posted on: ${comment.postedDateTime}`;
 
   const popupElement = document.createElement("span")
   popupElement.classList.add("popup-content");

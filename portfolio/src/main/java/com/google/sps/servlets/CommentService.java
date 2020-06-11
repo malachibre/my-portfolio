@@ -55,10 +55,10 @@ import javax.servlet.http.HttpServletResponse;
  * This class contains the fields and methods
  * required to use the Comment feature.
  */
- public class CommentService {
+ public final class CommentService {
 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-   
+ 
   public List<Comment> getComments(PreparedQuery results, int limit) {
     Iterable<Entity> newComments = results.asIterable(FetchOptions.Builder.withLimit(limit));    
     
@@ -81,10 +81,11 @@ import javax.servlet.http.HttpServletResponse;
   
   /** Adds the comment to the datastore. */
   public void saveComment(HttpServletRequest request) {
-    ZonedDateTime dateTime =  ZonedDateTime.now().withZoneSameInstant(ZoneId.of("America/New_York"));
+  
+    ZonedDateTime dateTime =  ZonedDateTime.now();
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM);
-    String postedTime = dateTime.format(formatter) + " EST";
+    DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT);
+    String postedTime = dateTime.format(formatter) + " UTC";
 
     Entity commentEntity = new Entity("Comment");
 
@@ -97,9 +98,7 @@ import javax.servlet.http.HttpServletResponse;
     datastore.put(commentEntity);
   }
 
- /**
-  * Removes Comments and Blob Information from datastore.
-  */
+  /** Removes Comments and Blob Information from datastore. */
   public void deleteAllComments() {
     removeEntities("Comment");
     removeEntities("__BlobInfo__");
