@@ -124,7 +124,7 @@ body {
   background-color: #bbb;
   cursor: pointer;
   position: absolute;
-  visibility: hidden;
+  display: none;
   top: 25vh;
   left: 68.5vw;
   width: 20vw;
@@ -138,13 +138,18 @@ body {
 }
 
 .show {
-  visibility: visible;
+  display: inline;
   animation: fadeIn 1s;
 }
 
 @keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 form {

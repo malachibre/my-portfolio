@@ -16,15 +16,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   showCommentForm();
 
-  document.getElementById("login")
-      .addEventListener("click", () => window.location.replace("/auth"));
-    
-  document.getElementById("header-login")
-      .addEventListener("click", () => window.location.replace("/auth"));
-
-   document.getElementById("logout")
-      .addEventListener("click", () => window.location.replace("/auth"));   
-
   const navBar = document.getElementById('nav-bar');
 
   Array.from(navBar.children).forEach(child => {
@@ -44,6 +35,7 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById("delete-comments")
       .addEventListener("click", deleteComments);
 
+  /** This condition should work every time after the first page load. */
   if (localStorage.getItem("commentAmount")) {
     document.getElementById("comment-amount").value =
         localStorage.getItem("commentAmount");
@@ -98,7 +90,7 @@ function clearComments() {
 function displayComment(comment) {
   const commentElement = document.createElement("p");
   commentElement.innerText =
-      `${comment.title} posted on: ${comment.month}/${comment.day}/${comment.year}`;
+      `${comment.title} posted on: ${comment.postedTime}`;
 
   const popupElement = document.createElement("span")
   popupElement.classList.add("popup-content");
@@ -167,6 +159,8 @@ fetch("/auth").then(response => response.text())
                   }
                 });
 }
+
+
 
 /**
  * Displays logout button and the username of logged in user.
