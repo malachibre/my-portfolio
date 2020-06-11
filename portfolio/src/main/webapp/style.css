@@ -112,11 +112,11 @@ body {
   background-color: #f00;
   border-color: #fff;
   color: #fff;   
+  padding: 3px;
 }
 
 #comments {
   height: 73%;
-  opacity: .5;
   overflow-y: scroll;
 }
 
@@ -155,4 +155,13 @@ body {
 
 form {
   padding: 0px;
+}
+
+.login-logout {
+    background-color: white;
+    border: 2px solid;
+    border-color: red;
+    color: red;
+    padding: 3px;
+    text-decoration: none;
 }

@@ -80,44 +80,53 @@ function clearComments() {
 }
 
 /** 
- * Creates paragraph elements and sets the text to comments 
- * pulled from /data page.
- * 
- * TODO: Sperate this method into 2. 
- * 1) Create the p element.
- * 2) Create the popupElement.
+ * This class creates a comment and it's associated popup so it can be added to the comments div.
  */
-function displayComment(comment) {
-  const commentElement = document.createElement("p");
-  commentElement.innerText =
-      `${comment.title} posted on: ${comment.postedDateTime}`;
+class PageComment extends HTMLElement {
+  comment = null;
 
-  const popupElement = document.createElement("span")
-  popupElement.classList.add("popup-content");
-  const commentTitle = document.createElement("h5");
-  commentTitle.innerText = comment.title;
-  const commentText = document.createElement("p");
-  commentText.innerText = comment.text;
-  const commentImg = document.createElement("img");
-  commentImg.src = comment.imageUrl;
-
-  popupElement.appendChild(commentTitle);
-  popupElement.appendChild(commentText);
-
-  if (comment.imageUrl) { 
-    popupElement.appendChild(commentImg);
+  constructor(comment) {
+    super();
+    this.comment = comment;
   }
 
-  commentElement.addEventListener("click", () => {
-      popupElement.classList.toggle("show");
-  });
+  connectedCallback() {
+    const {text, postedDateTime, title, imageUrl} = this.comment;
+    if (imageUrl) {
+      this.innerHTML = `
+        <p id="comment">${text} posted on ${postedDateTime}</p>
+        <span id="popup" class="popup-content">
+          <h5>${title}</h5>
+          <p>${text}</p>
+          <img src="${imageUrl}">
+        </span>
+      `;
+    } else {
+        this.innerHTML = `
+        <p id="comment">${text} posted on ${postedDateTime}</p>
+        <span id="popup" class="popup-content">
+          <h5>${title}</h5>
+          <p>${text}</p>
+        </span>
+        `;
+    }
+    this.querySelector('#comment').addEventListener('click', () => {
+        this.querySelector('#popup').classList.toggle('show');
+    });
+    this.querySelector('#popup').addEventListener('click', () => {
+        this.querySelector('#popup').classList.toggle('show');
+    });
+  }
+}
 
-  popupElement.addEventListener("click", () => {
-      popupElement.classList.toggle("show");
-  });
+customElements.define('my-comment', PageComment);
 
-  document.getElementById("comments").appendChild(commentElement);
-  document.body.appendChild(popupElement);
+/**
+ * Creates paragraph elements and sets the text to comments 
+ * pulled from /data page.
+ */
+function displayComment(comment) {
+    document.getElementById('comments').appendChild(new PageComment(comment));
 }
 
 /** Removes the comments from the page after being cleared from the Datastore. */

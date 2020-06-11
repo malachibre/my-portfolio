@@ -10,10 +10,10 @@
       professional and academic information about myself.
       Clicking on the buttons below will take you to 
       different parts of my life. </h3>
-  <a href="/auth" id="header-login">Login</a>
+  <a class="login-logout" href="/auth" id="header-login">Login</a>
   <div class="hidden" id="logout-container"> 
     <p id="user-display"></p>
-    <a href="/auth">Logout</a>
+    <a class="login-logout" href="/auth">Logout</a>
   </div>
 </div>
 <div id="layout-container">
@@ -87,7 +87,7 @@
       <input id="comment-amount" min="1" max="50" name="comment-amount" type="number" value="10">
     </form>
     <button id="delete-comments">Delete Comments</button>
-    <a href="/auth" id="login">Log in to leave comment</a> 
+    <a class="login-logout"  href="/auth" id="login">Log in to leave comment</a> 
     <a class="hidden" href="/comment-constructor.jsp" id="to-comment-page">Post a comment</a>
     <hr>
     <div id="comments"></div>
