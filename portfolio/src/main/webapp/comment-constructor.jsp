@@ -32,7 +32,7 @@ limitations under the License.
     <p>Text</p>
     <textarea class="form-input" name="text" type="text"></textarea>
     <p>Upload an image (optional)</p>
-    <input type="file" name="image" src="images/background.jpg">
+    <input type="file" name="image">
     <input type="submit">Add Comment
   </form>
 </div>

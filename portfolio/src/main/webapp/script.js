@@ -130,7 +130,6 @@ function loadCanvas() {
   const ctx = c.getContext("2d");
 }
 
-
 /** 
  * This method checks the login status. If the user is logged in, 
  * then the post comment button is displayed, the login buttons are hidden,
@@ -160,8 +159,6 @@ fetch("/auth").then(response => response.text())
                 });
 }
 
-
-
 /**
  * Displays logout button and the username of logged in user.
  */
@@ -169,8 +166,6 @@ function showUser() {
   document.getElementById("logout-container").classList.remove("hidden");
   document.getElementById("user-display").innerText = "Hello!"
 }
-
-
 
 let pictureNumber = 0;
 
