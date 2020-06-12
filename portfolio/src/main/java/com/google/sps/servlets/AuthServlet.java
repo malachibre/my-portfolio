@@ -40,16 +40,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+/** 
+ * This class uses the Authentitication API to check whehter a user is 
+ * logged in or not. And, also gives them tha ability to login/out.
+ */
 @WebServlet("/auth")
-public class AuthServlet extends HttpServlet {
+public final class AuthServlet extends HttpServlet {
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+      
     response.setContentType("text/html");
 
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
-      response.getWriter().println("logged in");
+      response.getWriter().println("logged in as " + userService.getCurrentUser().getEmail());
 
       String urlToRedirectToAfterUserLogsOut = "/";
       String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);

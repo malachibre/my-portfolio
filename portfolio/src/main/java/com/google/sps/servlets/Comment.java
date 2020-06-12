@@ -19,12 +19,15 @@ public final class Comment {
 
   /** postedDateTIme should appear like this: Jun 11, 2020 11:18 AM */  
   private final String postedDateTime;
+  private final String email;
   private final String title;
   private final String text;
   private final String imageUrl;
 
-  public Comment(String postedDateTime, String title, String text, String imageUrl) {
+  public Comment(String postedDateTime, String email, String title, String text, String imageUrl) {
+      
     this.postedDateTime = postedDateTime;
+    this.email = email;
     this.title = title;
     this.text = text;
     this.imageUrl = imageUrl;

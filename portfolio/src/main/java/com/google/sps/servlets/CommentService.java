@@ -28,7 +28,10 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ImagesServiceFailureException; 
 import com.google.appengine.api.images.ServingUrlOptions;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.LocalDateTime;
@@ -52,6 +55,7 @@ import javax.servlet.http.HttpServletResponse;
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
  
   public List<Comment> getComments(PreparedQuery results, int limit) {
+
     Iterable<Entity> newComments = results.asIterable(FetchOptions.Builder.withLimit(limit));    
     
     /** /data page is updated to contain JSON file of all images up to limit. */
@@ -60,11 +64,12 @@ import javax.servlet.http.HttpServletResponse;
         .map(entity -> {
             
             String postedTime = (String) entity.getProperty("postedTime");
+            String email = (String) entity.getProperty("email");
             String title = (String) entity.getProperty("title");
             String text = (String) entity.getProperty("text");
             String imageUrl = (String) entity.getProperty("imageUrl");
 
-            return new Comment(postedTime, title, text, imageUrl);
+            return new Comment(postedTime, email, title, text, imageUrl);
         })
         .collect(Collectors.toList());
     return comments;
@@ -79,13 +84,15 @@ import javax.servlet.http.HttpServletResponse;
     DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT);
     String postedTime = dateTime.format(formatter) + " UTC";
 
-    Entity commentEntity = new Entity("Comment");
+    UserService userService = UserServiceFactory.getUserService();
+    String email = userService.getCurrentUser().getEmail();
 
+    Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("postedTime", postedTime);
+    commentEntity.setProperty("email", email);
     commentEntity.setProperty("title", request.getParameter("title"));
     commentEntity.setProperty("text", request.getParameter("text"));  
     commentEntity.setProperty("imageUrl", getUploadedFileUrl(request, "image"));    
-    
     datastore.put(commentEntity);
   }
 
@@ -143,6 +150,8 @@ import javax.servlet.http.HttpServletResponse;
       URL url = new URL(imagesService.getServingUrl(options));
       return url.getPath();
     } catch (MalformedURLException e) {
+      return imagesService.getServingUrl(options);
+    } catch (ImagesServiceFailureException e){
       return imagesService.getServingUrl(options);
     }
   }

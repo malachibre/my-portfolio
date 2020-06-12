@@ -28,9 +28,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById("comment-amount")
       .addEventListener("change", getComments);
-
-  document.getElementById("to-comment-page")
-      .addEventListener("click", () => window.location.replace("/comment-constructor.jsp"))
     
   document.getElementById("delete-comments")
       .addEventListener("click", deleteComments);
@@ -91,10 +88,10 @@ class PageComment extends HTMLElement {
   }
 
   connectedCallback() {
-    const {text, postedDateTime, title, imageUrl} = this.comment;
+    const {postedDateTime, email, text, title, imageUrl} = this.comment;
     if (imageUrl) {
       this.innerHTML = `
-        <p id="comment">${text} posted on ${postedDateTime}</p>
+        <p id="comment">${text} posted on ${postedDateTime} by ${email}</p>
         <span id="popup" class="popup-content">
           <h5>${title}</h5>
           <p>${text}</p>
@@ -103,7 +100,7 @@ class PageComment extends HTMLElement {
       `;
     } else {
         this.innerHTML = `
-        <p id="comment">${text} posted on ${postedDateTime}</p>
+        <p id="comment">${text} posted on ${postedDateTime} by ${email}</p>
         <span id="popup" class="popup-content">
           <h5>${title}</h5>
           <p>${text}</p>
@@ -172,8 +169,19 @@ fetch("/auth").then(response => response.text())
  * Displays logout button and the username of logged in user.
  */
 function showUser() {
+  let userEmail = "";
+  fetch(`/auth`).then(response => response.text())
+      .then(text => {
+          text = text.replace("\n", " ");
+          /** 
+           * email will always be at index 3 in this array
+           * because of the way /auth is laid out.
+           */
+          userEmail = text.split(" ")[3];
+          document.getElementById("user-display").innerText = `Hello ${userEmail}!`;
+      });
   document.getElementById("logout-container").classList.remove("hidden");
-  document.getElementById("user-display").innerText = "Hello!"
+  
 }
 
 let pictureNumber = 0;

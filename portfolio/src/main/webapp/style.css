@@ -127,10 +127,10 @@ body {
   position: absolute;
   display: none;
   top: 25vh;
-  left: 68.5vw;
+  left: 65vw;
+  object-fit: contain;
   width: 20vw;
   height: 20vh;
-  
 }
 
 #comments p {
@@ -139,7 +139,7 @@ body {
 }
 
 .show {
-  display: inline;
+  display: inline-block;
   animation: fadeIn 1s;
 }
 
@@ -158,10 +158,16 @@ form {
 }
 
 .login-logout {
-    background-color: white;
-    border: 2px solid;
-    border-color: red;
-    color: red;
-    padding: 3px;
-    text-decoration: none;
+  background-color: white;
+  border: 2px solid;
+  border-color: red;
+  color: red;
+  padding: 3px;
+  text-decoration: none;
+}
+
+#header-login {
+  position: absolute;
+  top: 3vh;
+  left: 90vw;
 }
