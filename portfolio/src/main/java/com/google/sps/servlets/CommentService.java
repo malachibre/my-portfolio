@@ -25,7 +25,6 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ImagesServiceFailureException; 
@@ -34,17 +33,13 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.time.ZoneId;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /** 
  * This class contains the fields and methods
@@ -55,8 +50,6 @@ import javax.servlet.http.HttpServletResponse;
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
  
   public List<Comment> getComments(PreparedQuery results, int limit) {
-
-    Iterable<Entity> newComments = results.asIterable(FetchOptions.Builder.withLimit(limit));    
     
     /** /data page is updated to contain JSON file of all images up to limit. */
     List<Comment> comments = results.asList(FetchOptions.Builder.withLimit(limit))

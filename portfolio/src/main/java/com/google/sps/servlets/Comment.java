@@ -17,7 +17,7 @@ package com.google.sps.servlets;
 /** This class sets the text and date data for a {@code Comment} */
 public final class Comment {
 
-  /** postedDateTIme should appear like this: Jun 11, 2020 11:18 AM */  
+  /** postedDateTime should appear like this: Jun 11, 2020 11:18 AM */  
   private final String postedDateTime;
   private final String email;
   private final String title;
