@@ -32,7 +32,7 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById("delete-comments")
       .addEventListener("click", deleteComments);
 
-  /** This condition should work every time after the first page load. */
+  // This condition should work every time after the first page load. 
   if (localStorage.getItem("commentAmount")) {
     document.getElementById("comment-amount").value =
         localStorage.getItem("commentAmount");
@@ -42,7 +42,7 @@ window.addEventListener('DOMContentLoaded', () => {
   
 });
 
-/** Displays the content title and text in the content container. */
+// Displays the content title and text in the content container.
 function showContent(element) {
   const contentContainer = document.getElementById('content-container');
 
@@ -53,7 +53,7 @@ function showContent(element) {
   element.classList.toggle('hidden', false);
 }
 
-/** Retrieves data from the /data page and displays it. */
+// Retrieves data from the /data page and displays it. 
 function getComments() {
   clearComments();
 
@@ -68,7 +68,7 @@ function getComments() {
         });
 }
 
-/** Clears the div container holding the comments. */
+// Clears the div container holding the comments. 
 function clearComments() {
   commentContainer = document.getElementById("comments");
     while(commentContainer.firstChild) {
@@ -126,7 +126,7 @@ function displayComment(comment) {
     document.getElementById('comments').appendChild(new PageComment(comment));
 }
 
-/** Removes the comments from the page after being cleared from the Datastore. */
+// Removes the comments from the page after being cleared from the Datastore. 
 function deleteComments() {
   fetch("/data", {method: "DELETE"}).then(clearComments);
 }
@@ -178,7 +178,7 @@ function showUser() {
            * because of the way /auth is laid out.
            */
           userEmail = text.split(" ")[3];
-          document.getElementById("user-display").innerText = `Hello ${userEmail}!`;
+          document.getElementById("user-display").innerText = `Hello ${userEmail}!`;r
       });
   document.getElementById("logout-container").classList.remove("hidden");
   

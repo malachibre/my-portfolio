@@ -44,7 +44,7 @@ public final class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     String amountParam = request.getParameter("comment-amount");
 
-    /** Default value for commentAmount is 10 in case there's a parsing error. */
+    // Default value for commentAmount is 10 in case there's a parsing error. 
     int commentAmount = amountParam == null ? 10 : Integer.parseInt(amountParam);
     List<Comment> comments = commentService.getComments(results, commentAmount); 
     Gson gson = new Gson();

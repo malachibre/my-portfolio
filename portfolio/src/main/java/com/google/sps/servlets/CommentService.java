@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  
   public List<Comment> getComments(PreparedQuery results, int limit) {
     
-    /** /data page is updated to contain JSON file of all images up to limit. */
+    // /data page is updated to contain JSON file of all images up to limit. 
     List<Comment> comments = results.asList(FetchOptions.Builder.withLimit(limit))
         .stream()
         .map(entity -> {
@@ -89,14 +89,14 @@ import javax.servlet.http.HttpServletRequest;
     datastore.put(commentEntity);
   }
 
-  /** Removes Comments and Blob Information from datastore. */
+  // Removes Comments and Blob Information from datastore. 
   public void deleteAllComments() {
     removeEntities("Comment");
     removeEntities("__BlobInfo__");
     removeEntities("__BlobUploadSession__");
   } 
 
- /** Removes entities from datastore based off a query string. */
+ // Removes entities from datastore based off a query string. 
   private void removeEntities(String query) {
     datastore.prepare(new Query(query))
              .asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE))
