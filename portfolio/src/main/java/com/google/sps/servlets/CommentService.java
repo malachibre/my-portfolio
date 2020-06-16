@@ -25,15 +25,11 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ImagesServiceFailureException; 
 import com.google.appengine.api.images.ServingUrlOptions;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.time.ZonedDateTime;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -49,7 +45,10 @@ import javax.servlet.http.HttpServletRequest;
 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
  
-  public List<Comment> getComments(PreparedQuery results, int limit) {
+  public List<Comment> getComments(int limit) {
+
+    Query query = new Query("Comment").addSort("postedTime", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
     
     // /data page is updated to contain JSON file of all images up to limit. 
     List<Comment> comments = results.asList(FetchOptions.Builder.withLimit(limit))
@@ -70,22 +69,15 @@ import javax.servlet.http.HttpServletRequest;
   }
   
   /** Adds the comment to the datastore. */
-  public void saveComment(HttpServletRequest request) {
-  
-    ZonedDateTime dateTime =  ZonedDateTime.now();
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT);
-    String postedTime = dateTime.format(formatter) + " UTC";
-
-    UserService userService = UserServiceFactory.getUserService();
-    String email = userService.getCurrentUser().getEmail();
+  public void saveComment(Comment comment) {
 
     Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("postedTime", postedTime);
-    commentEntity.setProperty("email", email);
-    commentEntity.setProperty("title", request.getParameter("title"));
-    commentEntity.setProperty("text", request.getParameter("text"));  
-    commentEntity.setProperty("imageUrl", getUploadedFileUrl(request, "image"));    
+    commentEntity.setProperty("postedTime", comment.getPostedDateTime());
+    commentEntity.setProperty("email", comment.getEmail());
+    commentEntity.setProperty("title", comment.getTitle());
+    commentEntity.setProperty("text", comment.getText());  
+    commentEntity.setProperty("imageUrl", comment.getImageUrl());  
+
     datastore.put(commentEntity);
   }
 
@@ -110,7 +102,7 @@ import javax.servlet.http.HttpServletRequest;
   * 
   * Returns a URL that points to the uploaded file, or null if the user didn't upload a file.
   */
-  private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
+  public String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
     List<BlobKey> blobKeys = blobs.get("image");

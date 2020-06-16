@@ -33,4 +33,24 @@ public final class Comment {
     this.imageUrl = imageUrl;
     
   }
+
+  public String getPostedDateTime() {
+      return postedDateTime;
+  }
+
+  public String getEmail() {
+      return email;
+  }
+
+  public String getTitle() {
+      return title;
+  }
+
+  public String getText() {
+      return text;
+  }
+
+  public String getImageUrl() {
+      return imageUrl;
+  }
 }
