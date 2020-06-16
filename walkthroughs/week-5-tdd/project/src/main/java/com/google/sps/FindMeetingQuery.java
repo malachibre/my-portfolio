@@ -44,21 +44,18 @@ public final class FindMeetingQuery {
     }
 
     // Sort {@code events} by starting time.
-    List<Event> eventsList = new ArrayList(events);
+    List<Event> eventsList = new ArrayList<>(events);;
     eventsList.sort((Event a, Event b) -> {
         return TimeRange.ORDER_BY_START.compare(a.getWhen(), b.getWhen());
     });
 
     // Filter out events with attendees not in {@code request}.
     eventsList = eventsList.stream()
-                           .filter(e -> request.getAttendees()
-                                               .containsAll(e.getAttendees()) || 
-                                        request.getOptionalAttendees()
-                                               .containsAll(e.getAttendees()))
+                           .filter(event -> !Collections.disjoint(request.getAttendees(), event.getAttendees()) || 
+                                        !Collections.disjoint(request.getOptionalAttendees(), event.getAttendees()))
                            .collect(Collectors.toList());
     List<Event> mandatoryEvents = eventsList.stream()
-                           .filter(e -> request.getAttendees()
-                                               .containsAll(e.getAttendees()))
+                           .filter(event -> !Collections.disjoint(request.getAttendees(), event.getAttendees()))
                            .collect(Collectors.toList());
     
     Collection<TimeRange> allTRs = queryHelper(eventsList, request);
@@ -90,15 +87,15 @@ public final class FindMeetingQuery {
    */
   public Collection<TimeRange> queryHelper(Collection<Event> separateEvents, MeetingRequest request) {
     // Map each {@code Event} to it's {@code TimeRange}.
-    List<TimeRange> TimeRangeList = separateEvents.stream()
-                     .map(a -> a.getWhen())
+    List<TimeRange> timeRangeList = separateEvents.stream()
+                     .map(Event::getWhen)
                      .collect(Collectors.toList());
 
     // Resulting Collection
     Collection<TimeRange> openTimeRanges = new ArrayList();
 
     int currentMinTime = 0;
-    for(TimeRange tr : TimeRangeList) {
+    for(TimeRange tr : timeRangeList) {
         
         // If the end time of the current {@code TimeRange} is less than 
         // {@code currentMinTime} then it should be disregarded 

@@ -177,7 +177,7 @@ function showUser() {
            * because of the way /auth is laid out.
            */
           userEmail = text.split(" ")[3];
-          document.getElementById("user-display").innerText = `Hello ${userEmail}!`;r
+          document.getElementById("user-display").innerText = `Hello ${userEmail}!`;
       });
   document.getElementById("logout-container").classList.remove("hidden");
   
