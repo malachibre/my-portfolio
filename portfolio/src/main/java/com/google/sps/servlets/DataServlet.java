@@ -14,18 +14,13 @@
 
 package com.google.sps.servlets;
 
-
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.time.ZonedDateTime;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,34 +32,18 @@ import javax.servlet.http.HttpServletResponse;
  * and containing them in a JSON string. 
  */
 @WebServlet("/data")
-public class DataServlet extends HttpServlet {
+public final class DataServlet extends HttpServlet {
 
-  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private final CommentService commentService = new CommentService();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query("Comment").addSort("year", SortDirection.DESCENDING)
-                                      .addSort("month", SortDirection.DESCENDING)
-                                      .addSort("day", SortDirection.DESCENDING);
-
-    PreparedQuery results = datastore.prepare(query);
 
     String amountParam = request.getParameter("comment-amount");
+
+    // Default value for commentAmount is 10 in case there's a parsing error. 
     int commentAmount = amountParam == null ? 10 : Integer.parseInt(amountParam);
-
-    List<Comment> comments = new ArrayList<>();
-    Iterable<Entity> newComments = results.asIterable(FetchOptions.Builder.withLimit(commentAmount));    
-    
-    for (Entity entity : newComments) {
-
-      String text = (String) entity.getProperty("text");
-      long day = (long) entity.getProperty("day");
-      long month = (long) entity.getProperty("month");
-      long year = (long) entity.getProperty("year");
-      
-      Comment comment = new Comment(text, day, month, year);
-      comments.add(comment);
-    }
+    List<Comment> comments = commentService.getComments(commentAmount); 
     Gson gson = new Gson();
 
     response.setContentType("application/json;");
@@ -74,14 +53,21 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
 
-    Entity commentEntity = new Entity("Comment");
+    ZonedDateTime dateTime = ZonedDateTime.now();
 
-    commentEntity.setProperty("day", Calendar.getInstance().get(Calendar.DATE));
-    commentEntity.setProperty("month", Calendar.getInstance().get(Calendar.MONTH));
-    commentEntity.setProperty("text", request.getParameter("comment"));
-    commentEntity.setProperty("year", Calendar.getInstance().get(Calendar.YEAR));
+    DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT);
+    String postedTime = dateTime.format(formatter) + " UTC";
 
-    datastore.put(commentEntity);
+    UserService userService = UserServiceFactory.getUserService();
+    String email = userService.getCurrentUser().getEmail();
+
+    Comment comment = new Comment(postedTime, 
+                                  email, 
+                                  request.getParameter("title"), 
+                                  request.getParameter("text"), 
+                                  commentService.getUploadedFileUrl(request, "image"));
+
+    commentService.saveComment(comment);
 
     response.sendRedirect("/index.html");
   }
@@ -89,13 +75,9 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException { 
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-    Query query = new Query("Comment").setKeysOnly();
-    PreparedQuery results = datastore.prepare(query);
-
-    results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE)).stream().forEach(entity -> datastore.delete(entity.getKey()));
+    commentService.deleteAllComments();
 
     response.sendRedirect("/index.html");
   }
+
 }

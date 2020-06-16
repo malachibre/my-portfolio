@@ -15,16 +15,42 @@
 package com.google.sps.servlets;
 
 /** This class sets the text and date data for a {@code Comment} */
-public class Comment {
-  private long day;
-  private long month;
-  private long year;
-  private String text;
+public final class Comment {
 
-  public Comment(String text, long day, long month, long year) {
+  // postedDateTime should appear like this: Jun 11, 2020 11:18 AM   
+  private final String postedDateTime;
+  private final String email;
+  private final String title;
+  private final String text;
+  private final String imageUrl;
+
+  public Comment(String postedDateTime, String email, String title, String text, String imageUrl) {
+      
+    this.postedDateTime = postedDateTime;
+    this.email = email;
+    this.title = title;
     this.text = text;
-    this.day = day;
-    this.month = month;
-    this.year = year;
+    this.imageUrl = imageUrl;
+    
+  }
+
+  public String getPostedDateTime() {
+      return postedDateTime;
+  }
+
+  public String getEmail() {
+      return email;
+  }
+
+  public String getTitle() {
+      return title;
+  }
+
+  public String getText() {
+      return text;
+  }
+
+  public String getImageUrl() {
+      return imageUrl;
   }
 }

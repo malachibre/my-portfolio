@@ -2,6 +2,7 @@
 <meta charset="utf-8">
 <title>My Portfolio</title>
 <link rel="stylesheet" href="style.css">
+<a class="login-logout" href="/auth" id="header-login">Login</a>
 <div id="greeting-container">
   <h1>Malachi's portfolio</h1>
   <h3>My name is Malachi Brewer.
@@ -10,6 +11,10 @@
       professional and academic information about myself.
       Clicking on the buttons below will take you to 
       different parts of my life. </h3>
+  <div class="hidden" id="logout-container"> 
+    <p id="user-display"></p>
+    <a class="login-logout" href="/auth">Logout</a>
+  </div>
 </div>
 <div id="layout-container">
   <div id="nav-container">
@@ -22,7 +27,7 @@
       </ul>
   </div>
   <div id="content-container">
-    <article id="about-me" class="content-article">  
+    <article class="content-article" id="about-me">  
 	  <h3 class="content-title" id="about-me-title">About Me
 		<!--instragram.svg was donwloaded form flaticon.com and authored by Dave Gandy-->
 		<a href="https://www.instagram.com/malaxhib/">
@@ -35,7 +40,7 @@
 		Currently we are living in a neighborhood around 45 miles
 		north of Atlanta.
     </article>
-    <article id="education" class="content-article hidden">
+    <article class="content-article hidden" id="education">
       <h3 class="content-title" id="education-title">Education</h3>
       <p class="content-text" id="education-text"> Although I didn't always like school growing up,  
         I have also enjoyed learning new things about the world  
@@ -46,7 +51,7 @@
         second year as a computer science major at the  
         University of Georgia.
     </article>
-    <article id="professional" class="content-article hidden">
+    <article class="content-article hidden" id="professional" >
       <h3 class="content-title" id="professional-title">Professional
         <!--github.svg was downloaded form flaticon.com and authored by Dave Gandy-->
         <a href="https://www.linkedin.com/in/malachi-brewer-48957b15b">
@@ -76,19 +81,17 @@
     </article>
   </div>
   <div id="comment-container">
-    <form action="/data" method="post">
-      <p>Add a comment!
-      <input type="text" name="comment" value="comment">
-      <input class="submit-button" type="submit" value="Post Comment">
-    </form>
+    <h3>Comments!</h3>
     <form>
       <p>Show how many comments?
       <input id="comment-amount" min="1" max="50" name="comment-amount" type="number" value="10">
     </form>
-    <button class="submit-button" id="delete-comments">Delete Comments</button>
+    <button id="delete-comments">Delete Comments</button>
+    <a class="login-logout"  href="/auth" id="login">Log in to leave comment</a> 
+    <a class="hidden" href="/comment-constructor.jsp" id="to-comment-page">Post a comment</a>
     <hr>
     <div id="comments"></div>
   </div>
 </div>
-<canvas id="canvas" width=2000 height=230></canvas>
+<canvas id="canvas" width=500 height=100></canvas>
 <script src="script.js"></script>

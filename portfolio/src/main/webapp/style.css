@@ -27,13 +27,14 @@ body {
   
 }
 #nav-bar{
-    padding: 0;
+  padding: 0;
 }
 
 #nav-bar li {
   align-items: center;
   background-color: #f00;
   color: #fff;
+  cursor: pointer;
   display: flex;
   height: 14vh;
   justify-content: center;
@@ -80,7 +81,7 @@ body {
   height: 100%;
 }
 
-.hidden{
+.hidden {
   display: none;
 }
 
@@ -97,25 +98,76 @@ body {
 }
 
 #comment-container {
-    margin-right: 2%;
+  margin-right: 2%;
+  width: 20%;
 }
 
-.submit-button {
+#to-comment-page {
   background-color: #fff;
   border-color: #f00;
   color: #f00;   
 }
 
+#delete-comments {
+  background-color: #f00;
+  border-color: #fff;
+  color: #fff;   
+  padding: 3px;
+}
+
 #comments {
   height: 73%;
-  opacity: .5;
   overflow-y: scroll;
 }
 
+
+.popup-content {
+  background-color: #bbb;
+  cursor: pointer;
+  position: absolute;
+  display: none;
+  top: 25vh;
+  left: 65vw;
+  object-fit: contain;
+  width: 20vw;
+  height: 20vh;
+}
+
 #comments p {
+  cursor: pointer;
   font-size: 1.2em;
+}
+
+.show {
+  display: inline-block;
+  animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 form {
   padding: 0px;
+}
+
+.login-logout {
+  background-color: white;
+  border: 2px solid;
+  border-color: red;
+  color: red;
+  padding: 3px;
+  text-decoration: none;
+}
+
+#header-login {
+  position: absolute;
+  top: 3vh;
+  left: 90vw;
 }
