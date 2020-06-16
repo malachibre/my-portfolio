@@ -107,11 +107,10 @@ class PageComment extends HTMLElement {
         </span>
         `;
     }
-    this.querySelector('#comment').addEventListener('click', () => {
+    ['#comment', '#popup'].forEach(selector => {
+      this.querySelector(selector).addEventListener('click', () => {
         this.querySelector('#popup').classList.toggle('show');
-    });
-    this.querySelector('#popup').addEventListener('click', () => {
-        this.querySelector('#popup').classList.toggle('show');
+      });
     });
   }
 }
