@@ -24,23 +24,22 @@ import java.util.stream.Collectors;
 public final class FindMeetingQuery {
 
   /** First Solution: 
-   * Sort {@code events} by each event's starting time
-   * Filter out any events that do not include attendees in the request
-   * Map the filter eventlist to a list of each event's {@code TimeRange}
-   * Find vacant time slots with a duration longer than or equal to the request
-   * duration and add it to the {@code Collection<TimeRange>}
+   * Separate {@code events} in two lists based on attendee type.
+   * Call .queryHelper() on each list
+   * Return a collection with valid time slots accroding to requesst.
    *
    * This solution is O(nlog_n) becuase of the use of the stream.sort() method. 
    * Although, all of the test cases use Event Collections that are 
-   * already in order, which would allow me to remove .sort() and 
+   * already in order, which would the removal of .sort() and 
    * lower the algorithmic complexity to O(n).
-   * But it's not safe to assume the Event Collection will already be in order 
+   * But it's not safe to assume the Event Collection will always be in order 
    * before the method call.
    */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
 
     // If the request has no attendees, the open time slot is the entire day.
-    if (request.getAttendees().isEmpty()) {
+    if (request.getAttendees().isEmpty() && 
+        request.getOptionalAttendees().isEmpty()) {
         return Arrays.asList(TimeRange.WHOLE_DAY);
     }
 
@@ -50,13 +49,48 @@ public final class FindMeetingQuery {
         return TimeRange.ORDER_BY_START.compare(a.getWhen(), b.getWhen());
     });
 
-    // Filter out attendees not in {@code request}.
+    // Filter out events with attendees not in {@code request}.
     eventsList = eventsList.stream()
+                           .filter(e -> request.getAttendees()
+                                               .containsAll(e.getAttendees()) || 
+                                        request.getOptionalAttendees()
+                                               .containsAll(e.getAttendees()))
+                           .collect(Collectors.toList());
+    List<Event> mandatoryEvents = eventsList.stream()
                            .filter(e -> request.getAttendees()
                                                .containsAll(e.getAttendees()))
                            .collect(Collectors.toList());
+    
+    Collection<TimeRange> allTRs = queryHelper(eventsList, request);
+
+    // If there are no attendes, there could still be optional attendees
+    // so all valid {@code TimeRange} objects are returned.
+    if (request.getAttendees().isEmpty()) {
+      return allTRs;
+    }
+
+    Collection<TimeRange> mandatoryTRs = queryHelper(mandatoryEvents, request);
+
+    // If there are no avilable {@code TimeRange} objects for all attendees,
+    // avilable TRs for mandatory attendees should be returned in case there
+    // are avilable TRs for them.
+    if (allTRs.isEmpty()) {
+        return mandatoryTRs;
+    }
+
+    return allTRs;
+
+
+  }
+
+  /** 
+   * This is a helper method for .query(). 
+   * It works by finding all the availabe {@code TimeRange} objects that 
+   * qualify for request.
+   */
+  public Collection<TimeRange> queryHelper(Collection<Event> separateEvents, MeetingRequest request) {
     // Map each {@code Event} to it's {@code TimeRange}.
-    List<TimeRange> TimeRangeList = eventsList.stream()
+    List<TimeRange> TimeRangeList = separateEvents.stream()
                      .map(a -> a.getWhen())
                      .collect(Collectors.toList());
 
@@ -93,11 +127,8 @@ public final class FindMeetingQuery {
     if(newTR.duration() >= request.getDuration()) {
       openTimeRanges.add(newTR);
     }
-
     return openTimeRanges;
   }
-
-  
 
 
 }
