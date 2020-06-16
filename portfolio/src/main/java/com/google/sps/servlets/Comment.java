@@ -25,12 +25,31 @@ public final class Comment {
   private final String imageUrl;
 
   public Comment(String postedDateTime, String email, String title, String text, String imageUrl) {
-      
     this.postedDateTime = postedDateTime;
     this.email = email;
     this.title = title;
     this.text = text;
     this.imageUrl = imageUrl;
-    
   }
+
+  public String getPostedDateTime() {
+      return postedDateTime;
+  }
+  
+  public String getEmail() {
+      return email;
+  }
+
+  public String getTitle() {
+      return title;
+  }
+
+  public String getText() {
+      return text;
+  }
+
+  public String getImageUrl() {
+      return imageUrl;
+  }
+
 }
