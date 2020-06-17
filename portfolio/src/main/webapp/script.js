@@ -14,6 +14,8 @@
 
 window.addEventListener('DOMContentLoaded', () => {
 
+  fetchBlobstoreUrl() 
+
   showCommentForm();
 
   const navBar = document.getElementById('nav-bar');
@@ -41,6 +43,17 @@ window.addEventListener('DOMContentLoaded', () => {
   getComments();
   
 });
+
+function fetchBlobstoreUrl() {
+  fetch('/blobstore-upload-url')
+      .then((response) => {
+        return response.text();
+      })
+      .then((imageUploadUrl) => {
+        const messageForm = document.getElementById('comment-form');
+        messageForm.action = imageUploadUrl;
+      });
+}
 
 // Displays the content title and text in the content container.
 function showContent(element) {
@@ -130,11 +143,6 @@ function deleteComments() {
   fetch("/data", {method: "DELETE"}).then(clearComments);
 }
 
-function loadCanvas() {
-  const c = document.getElementById("canvas");
-  const ctx = c.getContext("2d");
-}
-
 /** 
  * This method checks the login status. If the user is logged in, 
  * then the post comment button is displayed, the login buttons are hidden,
@@ -146,7 +154,8 @@ function showCommentForm() {
                     if (text.includes("logged in")) {
                         document.getElementById("header-login").classList.add("hidden");
                         document.getElementById("login").classList.add("hidden");
-                        document.getElementById("to-comment-page").classList.remove("hidden");
+                        document.getElementById("comment-form").classList.remove("hidden");
+                        document.getElementById("logout-container").classList.remove("hidden")
                         showUser();
                     }
                 });
@@ -182,6 +191,12 @@ function showUser() {
   document.getElementById("logout-container").classList.remove("hidden");
   
 }
+
+function loadCanvas() {
+  const c = document.getElementById("canvas");
+  const ctx = c.getContext("2d");
+}
+
 
 let pictureNumber = 0;
 

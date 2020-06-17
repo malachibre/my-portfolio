@@ -87,8 +87,16 @@
       <input id="comment-amount" min="1" max="50" name="comment-amount" type="number" value="10">
     </form>
     <button id="delete-comments">Delete Comments</button>
+    <form class= "hidden" id="comment-form" enctype="multipart/form-data"  method="post">  
+      <p>Title</p>
+      <input type="text" name="title"></input>
+      <p>Text</p>
+      <textarea name="text" type="text"></textarea>
+      <p>Upload an image (optional)</p>
+      <input type="file" name="image">
+      <input class="comment-button" type="submit" value="Add Comment">
+    </form>
     <a class="login-logout"  href="/auth" id="login">Log in to leave comment</a> 
-    <a class="hidden" href="/comment-constructor.jsp" id="to-comment-page">Post a comment</a>
     <hr>
     <div id="comments"></div>
   </div>
