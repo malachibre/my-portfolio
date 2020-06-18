@@ -46,10 +46,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function fetchBlobstoreUrl() {
   fetch('/blobstore-upload-url')
-      .then((response) => {
-        return response.text();
-      })
-      .then((imageUploadUrl) => {
+      .then(response => response.text())
+      .then(imageUploadUrl => {
         const messageForm = document.getElementById('comment-form');
         messageForm.action = imageUploadUrl;
       });
