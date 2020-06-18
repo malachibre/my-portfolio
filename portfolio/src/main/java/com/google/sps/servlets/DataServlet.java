@@ -52,8 +52,7 @@ public final class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
-
-    ZonedDateTime dateTime =  ZonedDateTime.now();
+    ZonedDateTime dateTime = ZonedDateTime.now();
 
     DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT);
     String postedTime = dateTime.format(formatter) + " UTC";
