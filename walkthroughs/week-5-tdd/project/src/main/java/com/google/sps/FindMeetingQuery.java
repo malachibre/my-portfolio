@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 public final class FindMeetingQuery {
@@ -28,12 +29,6 @@ public final class FindMeetingQuery {
    * Call .queryHelper() on each list
    * Return a collection with valid time slots accroding to requesst.
    *
-   * This solution is O(nlog_n) becuase of the use of the stream.sort() method. 
-   * Although, all of the test cases use Event Collections that are 
-   * already in order, which would the removal of .sort() and 
-   * lower the algorithmic complexity to O(n).
-   * But it's not safe to assume the Event Collection will always be in order 
-   * before the method call.
    */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
 
@@ -57,26 +52,36 @@ public final class FindMeetingQuery {
     List<Event> mandatoryEvents = eventsList.stream()
                            .filter(event -> !Collections.disjoint(request.getAttendees(), event.getAttendees()))
                            .collect(Collectors.toList());
+    Collection<Event> optionalEvents = eventsList.stream()
+                           .filter(event -> !Collections.disjoint(request.getOptionalAttendees(), event.getAttendees()))
+                           .collect(Collectors.toList());
     
     Collection<TimeRange> allTRs = queryHelper(eventsList, request);
 
-    // If there are no attendes, there could still be optional attendees
-    // so all valid {@code TimeRange} objects are returned.
+    Collection<TimeRange> mandatoryTRs = queryHelper(mandatoryEvents, request);
+
+    Collection<TimeRange> maxOptions = findPossibleTimeSlots(optionalEvents,
+                                                             mandatoryTRs, 
+                                                             request);
+
+    if (allTRs.isEmpty() && !mandatoryTRs.isEmpty()) {
+      if (maxOptions.isEmpty()) {
+          return mandatoryTRs;
+      }
+      return maxOptions;
+    }
+
     if (request.getAttendees().isEmpty()) {
       return allTRs;
     }
-
-    Collection<TimeRange> mandatoryTRs = queryHelper(mandatoryEvents, request);
-
-    // If there are no avilable {@code TimeRange} objects for all attendees,
-    // avilable TRs for mandatory attendees should be returned in case there
-    // are avilable TRs for them.
-    if (allTRs.isEmpty()) {
-        return mandatoryTRs;
+    
+    if (mandatoryTRs.isEmpty() && !request.getOptionalAttendees().isEmpty()) {
+      return filterMaxOptions(Arrays.asList(TimeRange.WHOLE_DAY), 
+                        optionalEvents, 
+                        request);
     }
 
     return allTRs;
-
 
   }
 
@@ -127,5 +132,131 @@ public final class FindMeetingQuery {
     return openTimeRanges;
   }
 
+  /**
+   * Creates a new Collection of TimeRange objects that contains time slots
+   * that permits the avialblity of ALL mandatory employees and AT LEAST 1
+   * optional attendee.
+   * Optional Event  :           |--C--|
+   * Mandaotry Events  :       |--A--|     |--B--|
+   * Available TimeRange :              |--|
+   * @param eventsList - Sorted list of events by start time 
+   *                     to determine an available time
+   *                     for {@code request}
+   *
+   * @param mandatoryTRs - Collection of {@code TimeRange} objects that permit
+   *                       permit availablity of all mandatory attendees in 
+   *                        {@code request}
+   *
+   * @param request - Request to find open TimeRange objects with.
+   *
+   * @return A collection of {@code TimeRange} objects that contain availability
+   *         for all mandatory attendees and at least one optional attendee. 
+   * 
+   */
+  public Collection<TimeRange> findPossibleTimeSlots(Collection<Event> optionalEvents,
+                                                     Collection<TimeRange> mandatoryTRs,
+                                                     MeetingRequest request) {
+    
+    // Resulting Collection
+    Collection<TimeRange> possibleTimeSlots = new ArrayList<>();
+    
+    // Iterates through each {@code TimeRange} in {@code mandatoryTRs}
+    // and each {@code Event} in {@code optionalEvents} and creates 
+    // TimeRange objects that allow an optional attendee to fit inside 
+    // the same time span as an TimeRange object in mandatoryTRs.
+    for (TimeRange tr : mandatoryTRs) {
+      // current Min/Max time are set to -1 until a candidate is found for 
+      // each value.
+      int currentMinTime = -1;
+      int currentMaxTime = -1;
+      for (Event ev : optionalEvents) {
+        // If the event starts after the end of this available time slot,
+        // it can not fit inside the time span determined by this time slot
+        // so it is skipped. 
+        if (ev.getWhen().start() >= tr.end()) {
+          continue;
+        }
+        if (ev.getWhen().start() <= tr.start()) {
+          // if the event starts and ends before this {@code TimeRange}
+          // or starts before and ends after this TimeRange, it is 
+          // also not able to fit inside the time span determined 
+          // by the TimeRange.
+          if (ev.getWhen().end() >= tr.end() ||
+              ev.getWhen().end() <= tr.start()) {
+            continue;
+          } 
+          // If the event end before this TimeRange and ends during it,
+          // it marks the start of a possible new TimeRange that fits inside 
+          // the bounds of the current TimeRange.
+          currentMinTime = ev.getWhen().end();
+        }
+        // If the event starts before the end of this TimeRange,
+        // it marks the end of a new possible TimeRange.
+        if (ev.getWhen().start() < tr.end()) {
+          currentMaxTime = ev.getWhen().start();
+        }
+        // Once a pair is found, the TimeRange determined by current Min/Max time
+        // is added to {@code possibleTimeSlots} and these values are reset.
+        if (currentMinTime != -1 &&
+            currentMaxTime - currentMinTime >= request.getDuration()) {
+            possibleTimeSlots.add(TimeRange.fromStartEnd(currentMinTime, 
+                                                      currentMaxTime, 
+                                                      false));
+            currentMinTime = -1;
+            currentMaxTime = -1;
+        }
+      }
+    }
+    return filterMaxOptions(possibleTimeSlots, optionalEvents, request);
+  }
+
+  /**
+   * Filters the Collection returned by {@clink findPossibleTimeSlots} to 
+   * find the time slots that permit the avilability of the highest possible
+   * optional attendees.
+   * 
+   * @param possibleTimeSlots - {@code TimeRange} Collection returned by 
+   *                            {@link findPossibleTimeSlots}.
+   * @param optionalEvents - Events that contain optional attendees determined by {@code request}.
+   * 
+   * @param request - Request to find open TimeRange objects for.
+   *
+   * @return {@code TimeRange} Collection that allows the highest possible
+   *         optional Attendees and ALL mandatory attendees to attend the event
+   *         given in {@code request}.
+   */     
+  public Collection<TimeRange> filterMaxOptions(Collection<TimeRange> possibleTimeSlots,
+                                                Collection<Event> optionalEvents,
+                                                MeetingRequest request) {
+    // Resulting Collection
+    Collection<TimeRange> results = new ArrayList<>();
+    int maxOptionalAttendees = 0;
+    for (TimeRange tr : possibleTimeSlots) {
+      Collection<String> uniqueAttendees = new HashSet<>();
+      for (Event ev : optionalEvents) {
+        if (ev.getWhen().overlaps(tr)){
+          for (String attendee : ev.getAttendees()) {
+              if (request.getOptionalAttendees().contains(attendee) &&
+                  !uniqueAttendees.contains(attendee)){
+                uniqueAttendees.add(attendee);
+              }
+          }
+        }
+      }
+      if (uniqueAttendees.size() >= maxOptionalAttendees) {
+        // If this TimeRange allows more optionalAttendees than than the
+        // the current value, the resulting list should be cleared
+        // as none of those TimeRange objects allow more optionalAttendees
+        // than the current TimeRange.
+        if (uniqueAttendees.size() > maxOptionalAttendees) {
+          results.clear();
+        }
+        results.add(tr);
+        maxOptionalAttendees = uniqueAttendees.size();
+      } 
+
+    }
+    return results;
+  }
 
 }
