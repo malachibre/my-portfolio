@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 
 public final class FindMeetingQuery {
-
+  
   /** First Solution: 
    * Separate {@code events} in two lists based on attendee type.
    * Call .queryHelper() on each list
@@ -40,6 +40,7 @@ public final class FindMeetingQuery {
 
     // Sort {@code events} by starting time.
     List<Event> eventsList = new ArrayList<>(events);;
+
     eventsList.sort((Event a, Event b) -> {
         return TimeRange.ORDER_BY_START.compare(a.getWhen(), b.getWhen());
     });
@@ -54,6 +55,7 @@ public final class FindMeetingQuery {
                            .collect(Collectors.toList());
     Collection<Event> optionalEvents = eventsList.stream()
                            .filter(event -> !Collections.disjoint(request.getOptionalAttendees(), event.getAttendees()))
+
                            .collect(Collectors.toList());
     
     Collection<TimeRange> allTRs = queryHelper(eventsList, request);
@@ -79,10 +81,10 @@ public final class FindMeetingQuery {
       return filterMaxOptions(Arrays.asList(TimeRange.WHOLE_DAY), 
                         optionalEvents, 
                         request);
+
     }
 
     return allTRs;
-
   }
 
   /** 

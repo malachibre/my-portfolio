@@ -38,7 +38,7 @@ public final class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
+
     String amountParam = request.getParameter("comment-amount");  
 
     // Default value for commentAmount is 10 in case there's a parsing error. 
@@ -53,7 +53,6 @@ public final class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
     ZonedDateTime dateTime = ZonedDateTime.now();
-
     DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT);
     String postedTime = dateTime.format(formatter) + " UTC";
 
@@ -65,7 +64,6 @@ public final class DataServlet extends HttpServlet {
                                   request.getParameter("title"), 
                                   request.getParameter("text"), 
                                   commentService.getUploadedFileUrl(request, "image"));
-    
     commentService.saveComment(comment);
 
     response.sendRedirect("/index.html");

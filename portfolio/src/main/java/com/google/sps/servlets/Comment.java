@@ -35,7 +35,7 @@ public final class Comment {
   public String getPostedDateTime() {
       return postedDateTime;
   }
-  
+
   public String getEmail() {
       return email;
   }
@@ -51,5 +51,4 @@ public final class Comment {
   public String getImageUrl() {
       return imageUrl;
   }
-
 }
