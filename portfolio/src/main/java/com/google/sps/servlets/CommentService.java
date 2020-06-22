@@ -50,8 +50,7 @@ import javax.servlet.http.HttpServletRequest;
 
     Query query = new Query("Comment").addSort("postedTime", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
-    
-    
+
     // /data page is updated to contain JSON file of all images up to limit. 
     List<Comment> comments = results.asList(FetchOptions.Builder.withLimit(limit))
         .stream()
@@ -79,7 +78,7 @@ import javax.servlet.http.HttpServletRequest;
     commentEntity.setProperty("title", comment.getTitle());
     commentEntity.setProperty("text", comment.getText());  
     commentEntity.setProperty("imageUrl", comment.getImageUrl());
-
+    
     datastore.put(commentEntity);
   }
 
