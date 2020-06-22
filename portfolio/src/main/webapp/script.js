@@ -18,6 +18,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
   showCommentForm();
 
+  loadCanvas();
+
   const navBar = document.getElementById('nav-bar');
 
   Array.from(navBar.children).forEach(child => {
@@ -190,11 +192,63 @@ function showUser() {
   
 }
 
+const circles = [
+     {
+        "x" : 50,
+        "y" : 50,
+        "radius" : 15,
+        "fillColor" : "blue",
+        "dx" : 3
+
+    },
+
+     {
+        "x" : 650,
+        "y" : 50,
+        "radius" : 15,
+        "fillColor" : "green",
+        "dx" : -3
+    }
+];
+
+const c = document.getElementById("canvas");
+const ctx = c.getContext("2d");
+
 function loadCanvas() {
-  const c = document.getElementById("canvas");
-  const ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, c.width, c.height);  
+
+  circles.forEach(circle => {
+    ctx.beginPath();
+    ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI, false);
+    ctx.fillStyle = circle.fillColor;
+    ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.stroke();
+    circle.x += circle.dx;
+  });
+
+  collisionDetection();
+
+  window.requestAnimationFrame(loadCanvas);
 }
 
+function collisionDetection() {
+  const distance_x = circles[0].x - circles[1].x;
+  const distance_y = circles[0].y - circles[1].y;
+  const radius_sum = circles[0].radius + circles[1].radius;
+
+  if (distance_x*distance_x + distance_y*distance_y <= radius_sum) {
+      circles[0].dx *= -1
+      circles[1].dx *= -1;
+  } 
+
+  circles.forEach(circle => {
+    if (circle.x <= circle.radius || circle.x >= c.width - circle.radius) {
+        circle.dx *= -1;
+    } 
+  });
+
+}
 
 let pictureNumber = 0;
 
@@ -203,7 +257,7 @@ let pictureNumber = 0;
  * TODO: Add the button to call this method.
  */
 function cyclePictures() {
-  const headerSelfie = document.getElementById("gallery-picture");
+  const headerSelfie = document.getElementById("selfie");
   const imageNames = ["campus", "suit", "main-selfie"];
   headerSelfie.src = `images/${imageNames[pictureNumber++ % imageNames.length]}.jpg`;
 }
