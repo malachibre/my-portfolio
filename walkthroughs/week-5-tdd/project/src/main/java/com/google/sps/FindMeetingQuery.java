@@ -130,7 +130,7 @@ public final class FindMeetingQuery {
           currentMinTime = tr.end();
         } 
     }
-    // Adding the final avaibale time slot if possible.
+    // Adding the final available time slot if possible.
     TimeRange newTR = TimeRange.fromStartEnd(currentMinTime, TimeRange.END_OF_DAY, true);
     if (newTR.duration() >= request.getDuration()) {
       openTimeRanges.add(newTR);
