@@ -18,12 +18,16 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
 public final class FindMeetingQuery {
-  
+
+  private static Comparator<Event> ORDER_BY_EVENT_START = (Event a, Event b) ->
+    TimeRange.ORDER_BY_START.compare(a.getWhen(), b.getWhen());
+
   /** 
    * First Solution: 
    * Separate {@code events} in two lists based on attendee type.
@@ -39,76 +43,80 @@ public final class FindMeetingQuery {
         return Arrays.asList(TimeRange.WHOLE_DAY);
     }
 
-    // Sort {@code events} by starting time.
-    List<Event> eventsList = new ArrayList<>(events);;
-
-    
-
     // Filter out events with attendees not in {@code request}.
-    eventsList = eventsList.stream()
-                           .filter(event -> !Collections.disjoint(request.getAttendees(), event.getAttendees()) || 
-                                        !Collections.disjoint(request.getOptionalAttendees(), event.getAttendees()))
+    List<Event> eventsList = events.stream()
+                           .filter(event -> 
+                                !Collections.disjoint(request.getAttendees(),
+                                                      event.getAttendees()) || 
+                                !Collections.disjoint(request.getOptionalAttendees(),
+                                                      event.getAttendees()))
+                           .sorted(ORDER_BY_EVENT_START)
                            .collect(Collectors.toList());
 
-    eventsList.sort((Event a, Event b) -> {
-        return TimeRange.ORDER_BY_START.compare(a.getWhen(), b.getWhen());
-    });
-    
-    List<Event> mandatoryEvents = eventsList.stream()
+    List<TimeRange> eventTimes = eventsList.stream()
+                                           .map(Event::getWhen)
+                                           .collect(Collectors.toList());
+
+
+    Collection<TimeRange> allAvailableTimeRanges = 
+        findOpenTimeRanges(eventTimes, request.getDuration());
+
+    List<TimeRange> mandatoryEventTimes = events.stream()
                            .filter(event -> !Collections.disjoint(request.getAttendees(), event.getAttendees()))
+                           .sorted(ORDER_BY_EVENT_START)
+                           .map(Event::getWhen)
                            .collect(Collectors.toList());
+
     List<Event> optionalEvents = eventsList.stream()
-                           .filter(event -> !Collections.disjoint(request.getOptionalAttendees(), event.getAttendees()))
+                           .filter(event -> 
+                             !Collections.disjoint(request.getOptionalAttendees(), event.getAttendees()))
 
                            .collect(Collectors.toList());
-    
-    Collection<TimeRange> allTimeRanges = findOpenTimeRanges(eventsList, request);
 
-    Collection<TimeRange> mandatoryTRs = findOpenTimeRanges(mandatoryEvents, request);
+    Collection<TimeRange> mandatoryTRs = findOpenTimeRanges(mandatoryEventTimes, request.getDuration());
 
     Collection<TimeRange> maxOptions = findPossibleTimeSlots(optionalEvents,
                                                              mandatoryTRs, 
                                                              request);
 
-    if (allTimeRanges.isEmpty() && !mandatoryTRs.isEmpty()) {
+    if (allAvailableTimeRanges.isEmpty() && !mandatoryTRs.isEmpty()) {
       if (maxOptions.isEmpty()) {
           return mandatoryTRs;
       }
       return maxOptions;
     }
 
-    if (request.getAttendees().isEmpty()) {
-      return allTimeRanges;
-    }
-    
     if (mandatoryTRs.isEmpty() && !request.getOptionalAttendees().isEmpty()) {
-      return filterMaxOptions(Arrays.asList(TimeRange.WHOLE_DAY), 
+      return filterMaxOptions(Arrays.asList(TimeRange.WHOLE_DAY),
                         optionalEvents, 
                         request);
 
     }
 
-    return allTimeRanges;
+    return allAvailableTimeRanges;
   }
 
   /** 
    * This is a helper method for .query(). 
    * It works by finding all the availabe {@code TimeRange} objects that 
-   * qualify for request.
+   * qualify for request. 
+   * @param separateTimeRanges - Sorted list of time ranges
+   * @param minimumDuration - The minimum amount of time a non-conflicting 
+   *                          time slot can be so that it is added to the 
+   *                          returned collection.
+   * @return - All the time slots that do not conflict with any element in
+   *          separateTimeRanges and is also longer than minimumDuration.
    */
-  public Collection<TimeRange> findOpenTimeRanges(Collection<Event> separateEvents, MeetingRequest request) {
-    // Map each {@code Event} to it's {@code TimeRange}.
-    List<TimeRange> earliestStartTimes = separateEvents.stream()
-                     .map(Event::getWhen)
-                     .collect(Collectors.toList());
+  public Collection<TimeRange> findOpenTimeRanges(Collection<TimeRange> seperateTimeRanges, 
+                                                  long minimumDuration) {
 
     // Resulting Collection
-    Collection<TimeRange> openTimeRanges = new ArrayList();
+    Collection<TimeRange> openTimeRanges = new ArrayList<>();
 
-    int currentMinTime = 0;
-    for (TimeRange tr : earliestStartTimes) {
+    int currentMinTime = TimeRange.START_OF_DAY;
+    for (TimeRange tr : seperateTimeRanges) {
         
-        // If the end time of the current {@code TimeRange} is less than 
+        // If the end time of the current {@code TimeRange} is less than
         // {@code currentMinTime} then it should be disregarded 
         // as it will not change  the value of {@code currentMinTime}
         if (tr.end() <= currentMinTime) {
@@ -121,9 +129,9 @@ public final class FindMeetingQuery {
         else {
             if (!tr.contains(currentMinTime)) {
               TimeRange newTR = TimeRange.fromStartEnd(currentMinTime, tr.start(), false);
-              // the duration of the current time slot needs to be greater than the 
-              // duration of {@code request} to be considered 
-              if(newTR.duration() >= request.getDuration()) {
+              // the duration of the current time slot needs to be greater than the
+              // duration of {@code request} to be considered
+              if(newTR.duration() >= minimumDuration) {
                 openTimeRanges.add(newTR);
               }           
             }
@@ -132,7 +140,7 @@ public final class FindMeetingQuery {
     }
     // Adding the final available time slot if possible.
     TimeRange newTR = TimeRange.fromStartEnd(currentMinTime, TimeRange.END_OF_DAY, true);
-    if (newTR.duration() >= request.getDuration()) {
+    if (newTR.duration() >= minimumDuration) {
       openTimeRanges.add(newTR);
     }
     return openTimeRanges;
@@ -145,18 +153,18 @@ public final class FindMeetingQuery {
    * Optional Event  :           |--C--|
    * Mandaotry Events  :       |--A--|     |--B--|
    * Available TimeRange :              |--|
-   * @param eventsList - Sorted list of events by start time 
+   * @param eventsList - Sorted list of events by start time
    *                     to determine an available time
    *                     for {@code request}
    *
    * @param mandatoryTRs - Collection of {@code TimeRange} objects that permit
-   *                       permit availablity of all mandatory attendees in 
+   *                       permit availablity of all mandatory attendees in
    *                        {@code request}
    *
    * @param request - Request to find open TimeRange objects with.
    *
    * @return A collection of {@code TimeRange} objects that contain availability
-   *         for all mandatory attendees and at least one optional attendee. 
+   *         for all mandatory attendees and at least one optional attendee.
    * 
    */
   public Collection<TimeRange> findPossibleTimeSlots(Collection<Event> optionalEvents,
@@ -168,10 +176,10 @@ public final class FindMeetingQuery {
     
     // Iterates through each {@code TimeRange} in {@code mandatoryTRs}
     // and each {@code Event} in {@code optionalEvents} and creates 
-    // TimeRange objects that allow an optional attendee to fit inside 
+    // TimeRange objects that allow an optional attendee to fit inside
     // the same time span as an TimeRange object in mandatoryTRs.
     for (TimeRange tr : mandatoryTRs) {
-      // current Min/Max time are set to -1 until a candidate is found for 
+      // current Min/Max time are set to -1 until a candidate is found for
       // each value.
       int currentMinTime = -1;
       int currentMaxTime = -1;
@@ -184,15 +192,15 @@ public final class FindMeetingQuery {
         }
         if (ev.getWhen().start() <= tr.start()) {
           // if the event starts and ends before this {@code TimeRange}
-          // or starts before and ends after this TimeRange, it is 
-          // also not able to fit inside the time span determined 
+          // or starts before and ends after this TimeRange, it is
+          // also not able to fit inside the time span determined
           // by the TimeRange.
           if (ev.getWhen().end() >= tr.end() ||
               ev.getWhen().end() <= tr.start()) {
             continue;
           } 
           // If the event end before this TimeRange and ends during it,
-          // it marks the start of a possible new TimeRange that fits inside 
+          // it marks the start of a possible new TimeRange that fits inside
           // the bounds of the current TimeRange.
           currentMinTime = ev.getWhen().end();
         }
@@ -205,8 +213,8 @@ public final class FindMeetingQuery {
         // is added to {@code possibleTimeSlots} and these values are reset.
         if (currentMinTime != -1 &&
             currentMaxTime - currentMinTime >= request.getDuration()) {
-            possibleTimeSlots.add(TimeRange.fromStartEnd(currentMinTime, 
-                                                      currentMaxTime, 
+            possibleTimeSlots.add(TimeRange.fromStartEnd(currentMinTime,
+                                                      currentMaxTime,
                                                       false));
             currentMinTime = -1;
             currentMaxTime = -1;
@@ -217,7 +225,7 @@ public final class FindMeetingQuery {
   }
 
   /**
-   * Filters the Collection returned by {@clink findPossibleTimeSlots} to 
+   * Filters the Collection returned by {@clink findPossibleTimeSlots} to
    * find the time slots that permit the avilability of the highest possible
    * optional attendees.
    * 
@@ -230,7 +238,7 @@ public final class FindMeetingQuery {
    * @return {@code TimeRange} Collection that allows the highest possible
    *         optional Attendees and ALL mandatory attendees to attend the event
    *         given in {@code request}.
-   */     
+   */
   public Collection<TimeRange> filterMaxOptions(Collection<TimeRange> possibleTimeSlots,
                                                 Collection<Event> optionalEvents,
                                                 MeetingRequest request) {
@@ -259,7 +267,7 @@ public final class FindMeetingQuery {
         }
         results.add(tr);
         maxOptionalAttendees = uniqueAttendees.size();
-      } 
+      }
 
     }
     return results;
