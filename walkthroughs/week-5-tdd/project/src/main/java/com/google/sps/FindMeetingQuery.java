@@ -73,20 +73,20 @@ public final class FindMeetingQuery {
 
                            .collect(Collectors.toList());
 
-    Collection<TimeRange> mandatoryTRs = findOpenTimeRanges(mandatoryEventTimes, request.getDuration());
+    Collection<TimeRange> mandatoryTimeRanges = findOpenTimeRanges(mandatoryEventTimes, request.getDuration());
 
     Collection<TimeRange> maxOptions = findPossibleTimeSlots(optionalEvents,
-                                                             mandatoryTRs, 
+                                                             mandatoryTimeRanges, 
                                                              request);
 
-    if (allAvailableTimeRanges.isEmpty() && !mandatoryTRs.isEmpty()) {
+    if (allAvailableTimeRanges.isEmpty() && !mandatoryTimeRanges.isEmpty()) {
       if (maxOptions.isEmpty()) {
-          return mandatoryTRs;
+          return mandatoryTimeRanges;
       }
       return maxOptions;
     }
 
-    if (mandatoryTRs.isEmpty() && !request.getOptionalAttendees().isEmpty()) {
+    if (mandatoryTimeRanges.isEmpty() && !request.getOptionalAttendees().isEmpty()) {
       return filterMaxOptions(Arrays.asList(TimeRange.WHOLE_DAY),
                         optionalEvents, 
                         request);
@@ -107,36 +107,34 @@ public final class FindMeetingQuery {
    * @return - All the time slots that do not conflict with any element in
    *          separateTimeRanges and is also longer than minimumDuration.
    */
-  public Collection<TimeRange> findOpenTimeRanges(Collection<TimeRange> seperateTimeRanges, 
+  public Collection<TimeRange> findOpenTimeRanges(Collection<TimeRange> separateTimeRanges, 
                                                   long minimumDuration) {
 
     // Resulting Collection
     Collection<TimeRange> openTimeRanges = new ArrayList<>();
 
     int currentMinTime = TimeRange.START_OF_DAY;
-    for (TimeRange tr : seperateTimeRanges) {
+    for (TimeRange tr : separateTimeRanges) {
         
-        // If the end time of the current {@code TimeRange} is less than
-        // {@code currentMinTime} then it should be disregarded 
-        // as it will not change  the value of {@code currentMinTime}
-        if (tr.end() <= currentMinTime) {
-            continue;
-        }
+      // If the end time of the current {@code TimeRange} is less than 
+      // {@code currentMinTime} then it should be disregarded 
+      // as it will not change  the value of {@code currentMinTime}
+      if (tr.end() <= currentMinTime) {
+        continue;
+      }
 
-        // If the current {@code TimeRange} contains {@code currentMinTime},
-        // it will change the value of {@code currentMinTime}, but will not
-        // influence the start time of the current open time slot.
-        else {
-            if (!tr.contains(currentMinTime)) {
-              TimeRange newTR = TimeRange.fromStartEnd(currentMinTime, tr.start(), false);
-              // the duration of the current time slot needs to be greater than the
-              // duration of {@code request} to be considered
-              if(newTR.duration() >= minimumDuration) {
-                openTimeRanges.add(newTR);
-              }           
-            }
-          currentMinTime = tr.end();
+      // If the current {@code TimeRange} contains {@code currentMinTime},
+      // it will change the value of {@code currentMinTime}, but will not
+      // influence the start time of the current open time slot.
+      else if (!tr.contains(currentMinTime)){
+        TimeRange newTR = TimeRange.fromStartEnd(currentMinTime, tr.start(), false);
+          // the duration of the current time slot needs to be greater than the 
+          // duration of {@code request} to be considered 
+          if(newTR.duration() >= minimumDuration) {
+            openTimeRanges.add(newTR);
+          }           
         } 
+      currentMinTime = tr.end();
     }
     // Adding the final available time slot if possible.
     TimeRange newTR = TimeRange.fromStartEnd(currentMinTime, TimeRange.END_OF_DAY, true);
@@ -157,7 +155,7 @@ public final class FindMeetingQuery {
    *                     to determine an available time
    *                     for {@code request}
    *
-   * @param mandatoryTRs - Collection of {@code TimeRange} objects that permit
+   * @param mandatoryTimeRanges - Collection of {@code TimeRange} objects that permit
    *                       permit availablity of all mandatory attendees in
    *                        {@code request}
    *
@@ -168,46 +166,46 @@ public final class FindMeetingQuery {
    * 
    */
   public Collection<TimeRange> findPossibleTimeSlots(Collection<Event> optionalEvents,
-                                                     Collection<TimeRange> mandatoryTRs,
+                                                     Collection<TimeRange> mandatoryTimeRanges,
                                                      MeetingRequest request) {
     
     // Resulting Collection
     Collection<TimeRange> possibleTimeSlots = new ArrayList<>();
     
-    // Iterates through each {@code TimeRange} in {@code mandatoryTRs}
+    // Iterates through each {@code TimeRange} in {@code mandatoryTimeRanges}
     // and each {@code Event} in {@code optionalEvents} and creates 
     // TimeRange objects that allow an optional attendee to fit inside
-    // the same time span as an TimeRange object in mandatoryTRs.
-    for (TimeRange tr : mandatoryTRs) {
+    // the same time span as an TimeRange object in mandatoryTimeRanges.
+    for (TimeRange timeRange : mandatoryTimeRanges) {
       // current Min/Max time are set to -1 until a candidate is found for
       // each value.
       int currentMinTime = -1;
       int currentMaxTime = -1;
-      for (Event ev : optionalEvents) {
+      for (Event event : optionalEvents) {
         // If the event starts after the end of this available time slot,
         // it can not fit inside the time span determined by this time slot
         // so it is skipped. 
-        if (ev.getWhen().start() >= tr.end()) {
+        if (event.getWhen().start() >= timeRange.end()) {
           continue;
         }
-        if (ev.getWhen().start() <= tr.start()) {
+        if (event.getWhen().start() <= timeRange.start()) {
           // if the event starts and ends before this {@code TimeRange}
           // or starts before and ends after this TimeRange, it is
           // also not able to fit inside the time span determined
           // by the TimeRange.
-          if (ev.getWhen().end() >= tr.end() ||
-              ev.getWhen().end() <= tr.start()) {
+          if (event.getWhen().end() >= timeRange.end() ||
+              event.getWhen().end() <= timeRange.start()) {
             continue;
           } 
           // If the event end before this TimeRange and ends during it,
           // it marks the start of a possible new TimeRange that fits inside
           // the bounds of the current TimeRange.
-          currentMinTime = ev.getWhen().end();
+          currentMinTime = event.getWhen().end();
         }
         // If the event starts before the end of this TimeRange,
         // it marks the end of a new possible TimeRange.
-        if (ev.getWhen().start() < tr.end()) {
-          currentMaxTime = ev.getWhen().start();
+        if (event.getWhen().start() < timeRange.end()) {
+          currentMaxTime = event.getWhen().start();
         }
         // Once a pair is found, the TimeRange determined by current Min/Max time
         // is added to {@code possibleTimeSlots} and these values are reset.
@@ -245,11 +243,11 @@ public final class FindMeetingQuery {
     // Resulting Collection
     Collection<TimeRange> results = new ArrayList<>();
     int maxOptionalAttendees = 0;
-    for (TimeRange tr : possibleTimeSlots) {
+    for (TimeRange timeRange : possibleTimeSlots) {
       Collection<String> uniqueAttendees = new HashSet<>();
-      for (Event ev : optionalEvents) {
-        if (ev.getWhen().overlaps(tr)){
-          for (String attendee : ev.getAttendees()) {
+      for (Event event : optionalEvents) {
+        if (event.getWhen().overlaps(timeRange)){
+          for (String attendee : event.getAttendees()) {
               if (request.getOptionalAttendees().contains(attendee) &&
                   !uniqueAttendees.contains(attendee)){
                 uniqueAttendees.add(attendee);
@@ -265,7 +263,7 @@ public final class FindMeetingQuery {
         if (uniqueAttendees.size() > maxOptionalAttendees) {
           results.clear();
         }
-        results.add(tr);
+        results.add(timeRange);
         maxOptionalAttendees = uniqueAttendees.size();
       }
 
