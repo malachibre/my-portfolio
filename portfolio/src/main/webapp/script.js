@@ -14,7 +14,11 @@
 
 window.addEventListener('DOMContentLoaded', () => {
 
+  fetchBlobstoreUrl() 
+
   showCommentForm();
+
+  loadCanvas();
 
   const navBar = document.getElementById('nav-bar');
 
@@ -41,6 +45,15 @@ window.addEventListener('DOMContentLoaded', () => {
   getComments();
   
 });
+
+function fetchBlobstoreUrl() {
+  fetch('/blobstore-upload-url')
+      .then(response => response.text())
+      .then(imageUploadUrl => {
+        const messageForm = document.getElementById('comment-form');
+        messageForm.action = imageUploadUrl;
+      });
+}
 
 // Displays the content title and text in the content container.
 function showContent(element) {
@@ -110,7 +123,7 @@ class PageComment extends HTMLElement {
     ['#comment', '#popup'].forEach(selector => {
       this.querySelector(selector).addEventListener('click', () => {
         this.querySelector('#popup').classList.toggle('show');
-      }); 
+      });
     });
   }
 }
@@ -130,11 +143,6 @@ function deleteComments() {
   fetch("/data", {method: "DELETE"}).then(clearComments);
 }
 
-function loadCanvas() {
-  const c = document.getElementById("canvas");
-  const ctx = c.getContext("2d");
-}
-
 /** 
  * This method checks the login status. If the user is logged in, 
  * then the post comment button is displayed, the login buttons are hidden,
@@ -146,7 +154,8 @@ function showCommentForm() {
                     if (text.includes("logged in")) {
                         document.getElementById("header-login").classList.add("hidden");
                         document.getElementById("login").classList.add("hidden");
-                        document.getElementById("to-comment-page").classList.remove("hidden");
+                        document.getElementById("comment-form").classList.remove("hidden");
+                        document.getElementById("logout-container").classList.remove("hidden")
                         showUser();
                     }
                 });
@@ -177,10 +186,68 @@ function showUser() {
            * because of the way /auth is laid out.
            */
           userEmail = text.split(" ")[3];
-          document.getElementById("user-display").innerText = `Hello ${userEmail}!`;r
+          document.getElementById("user-display").innerText = `Hello ${userEmail}!`;
       });
   document.getElementById("logout-container").classList.remove("hidden");
   
+}
+
+const circles = [
+     {
+        "x" : 50,
+        "y" : 50,
+        "radius" : 15,
+        "fillColor" : "blue",
+        "dx" : 3
+
+    },
+
+     {
+        "x" : 650,
+        "y" : 50,
+        "radius" : 15,
+        "fillColor" : "green",
+        "dx" : -3
+    }
+];
+
+const c = document.getElementById("canvas");
+const ctx = c.getContext("2d");
+
+function loadCanvas() {
+  ctx.clearRect(0, 0, c.width, c.height);  
+
+  circles.forEach(circle => {
+    ctx.beginPath();
+    ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI, false);
+    ctx.fillStyle = circle.fillColor;
+    ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.stroke();
+    circle.x += circle.dx;
+  });
+
+  collisionDetection();
+
+  window.requestAnimationFrame(loadCanvas);
+}
+
+function collisionDetection() {
+  const distance_x = circles[0].x - circles[1].x;
+  const distance_y = circles[0].y - circles[1].y;
+  const radius_sum = circles[0].radius + circles[1].radius;
+
+  if (distance_x*distance_x + distance_y*distance_y <= radius_sum) {
+      circles[0].dx *= -1
+      circles[1].dx *= -1;
+  } 
+
+  circles.forEach(circle => {
+    if (circle.x <= circle.radius || circle.x >= c.width - circle.radius) {
+        circle.dx *= -1;
+    } 
+  });
+
 }
 
 let pictureNumber = 0;
@@ -190,7 +257,7 @@ let pictureNumber = 0;
  * TODO: Add the button to call this method.
  */
 function cyclePictures() {
-  const headerSelfie = document.getElementById("gallery-picture");
+  const headerSelfie = document.getElementById("selfie");
   const imageNames = ["campus", "suit", "main-selfie"];
   headerSelfie.src = `images/${imageNames[pictureNumber++ % imageNames.length]}.jpg`;
 }
